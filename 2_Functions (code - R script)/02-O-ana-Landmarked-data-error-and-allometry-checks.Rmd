@@ -205,8 +205,8 @@ findMeanSpec(bY.shape)
 
 par <- gridPar(pt.bg="pink", pt.size = 1)
 
-plotRefToTarget(bY.shape[ , , 68], bY.shape[ , , 17], method = "vector", gridPars = par )
-plotRefToTarget(bY.shape[ , , outliers[68]], bY.shape[ , , outliers[2]], method = "vector")
+plotRefToTarget(bY.shape[ , , 68], bY.shape[ , , 56], method = "vector", gridPars = par )
+plotRefToTarget(bY.shape[ , , outliers[68]], bY.shape[ , , outliers[29]], method = "vector")
 
 ```
 
