@@ -5,10 +5,6 @@ date: "12-03- 2019"
 output: html_document
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
-
 # Converting information from Viewbox into shape and metadata
 This code extracts two kinds of data from an excel sheet of coordinates exported from Viewbox, a 3D landmarking software (dHAL software, Kifissia, Greece; www.dhal.com; Polychronis et al. 2013). The first is the shape information from the 3D coordinates. The second is the metadata stored in the filename for each specimen.
 
@@ -25,11 +21,6 @@ library(data.table)
 library(geomorph)
 ```
 
-### Load custom functions written for these analyses
-```{r}
-source("../Functions/utilities.R")  # defined in utilities.R for conciseness.
-```
-
 ## Prepare shape data for analyses in _geomorph_
 Viewbox exports the data as a 2D array with specimens as columns and X, Y, and Z coordinates as rows for landmark. For _geomorph_, we need to convert this into a 3D array where each specimen has its own 2D array of 3 columns for XYZ coordinates and a row for each landmark. In other words, a 3D array has dimensions (p x k x n), where p is the number of landmarks, k is the dimension (2 or 3), and n is the number of specimens.
 
@@ -39,12 +30,6 @@ We also need to extract the metadata contained in the specimen filenames (export
 First, to reduce user error, Patrick Green has landmarked 10 specimens to familiarize himself with the template and re-landmarked those 10 later on. This is close to the standard "burn-in" number recommended by GMM experts like _geomorph_ co-author, Dr Emma Sherratt (see her guides [here](http://www.emmasherratt.com/morphometrics/)).
 
 Viewbox puts the most recent specimen in the first row of the output .csv file, which is why we take the 10 initial specimens from the last rows of the coordinate dataset. 
-
-
-```{r}
-coords.3D <- read.csv(""", header = T)
-```
-_Note that the data is loaded in using a relative directory - not a `setwd()` command. This allows others who have cloned this repo of data and code to still use the code out of the box._
 
 ### Convert to 3D array
 Here, we convert the coordinates into a 3D array for _geomorph_. Importantly, we need to remove the 1st column of landmark names. Followig this is a 3D check of the landmarked positions. 
@@ -213,8 +198,6 @@ library(stringr)
 library(stringi)
 library(data.table)
 library(geomorph)
-source("../Functions/utilities.R")  # custom functions defined in utilities.R
-load(file = "../Data/Processed/01-bilat-data-w-ERR.rda")
 ```
 
 ## Check for outliers and fix landmarking errors
@@ -223,7 +206,6 @@ _geomorph_ comes with a handy function to check for outliers. Since our sample h
 # Plot outliers by genus for small patch dataset
 outliers <- plotOutliers(bY.shape, inspect.outliers = F)
 ```
-
 
 ### Visualize why they are outliers by looking at landmark vectors
 We can examine the landmark placements in outliers as compared to the specimen closest to the median, based on the plots above. This allows us to determine if there were any major landmarking errors that might impact further analyses.
@@ -264,7 +246,3 @@ Allom_Sex <-
 ```
 
 ### Save intermediate data 
-These are the main datasets for both protocols without replicates
-```{r}
-save(shape, info, sm.shape, sm.info, file = "../Data/Processed/02-main-data-both-protocols.rda")
-```
