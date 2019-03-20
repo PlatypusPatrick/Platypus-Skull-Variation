@@ -177,9 +177,12 @@ land.pairs <- FindPairs(u.pt.names)
 ```
 
 ### Run bilateral GPA
-Now we are ready to re-run the generalized Procrustes alignment using bilateral landmark designations and extract the symmetric component of shape.
-
-WARNING: the `bilat.symmetry()` function will change the order of specimens in the shape file IF you have any non-unique names in the vector given to argument `ind =` of `bilat.symmetry()`. For example, if we had used `$CatNum`, then we would have 2 of the same CatNums for specimens with replicates. To avoid this, have a column for Replicate Status ("Rep" in this script), merge this with the CatNum column and any other columns of interest, and use this `$All` column for the `ind =` argument of `bilat.symmetry()`.
+Now we are ready to re-run the generalized Procrustes alignment using bilateral landmark designations and extract the symmetric component of shape.  
++
+Double check names 
++ 
+Summarize results from bilateral symmetry analyses
+The bilateral results may be relevant for researchers interested in how much variation can be explained by symmetric variation among specimens, asymmetric variation among specimens, and fluctating asymmetry within specimens. 
 ```{r}
 # Perform bilateral procrustes alignment on each patch protocol
 biY <- bilat.symmetry(Y$coords, ind = sp.info$All, object.sym = T, replicate = NULL, side = NULL, land.pairs = land.pairs)
@@ -194,12 +197,6 @@ names(Y$Csize)
 summary(biY)
 
 
-```
-
-## Summarize results from bilateral symmetry analyses
-The bilateral results may be relevant for researchers interested in how much variation can be explained by symmetric variation among specimens, asymmetric variation among specimens, and fluctating asymmetry within specimens. 
-```{r}
-summary(biY)
 ```
 
 ##############################################################################################
@@ -239,7 +236,6 @@ findMeanSpec(bY.shape)
 
 par <- gridPar(pt.bg="pink", pt.size = 1)
 
-#vw GO THROUGH all three same way as the line below to check for errors
 plotRefToTarget(bY.shape[ , , 2], bY.shape[ , , 17], method = "vector", gridPars = par )
 plotRefToTarget(bY.shape[ , , outliers[2]], bY.shape[ , , outliers[2]], method = "vector")
 
@@ -255,7 +251,7 @@ Allom<-procD.allometry(shape~size, iter = 499, data = shape.size)
 
 plot(Allom, method="RegScore" )
 #if labels are needed for the allometry plot
-#label=dimnames(shape.size$shape)[[3]]
+label=dimnames(shape.size$shape)[[3]]
 
 #is the allometry correlated with latitude; sex; population?
 Allom_Pop <-
