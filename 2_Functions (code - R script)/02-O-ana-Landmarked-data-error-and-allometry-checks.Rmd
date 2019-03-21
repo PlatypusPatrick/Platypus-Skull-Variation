@@ -228,8 +228,6 @@ plot(Allom, method="RegScore" )
 #if labels are needed for the allometry plot
 label=dimnames(shape.size$shape)[[3]]
 
-
-
 #is the allometry correlated with latitude; sex; population?
 Allom_Pop <- 
 Allom_Lat <-
