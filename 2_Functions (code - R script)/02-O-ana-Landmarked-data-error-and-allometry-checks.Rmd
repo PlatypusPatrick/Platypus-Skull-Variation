@@ -122,6 +122,9 @@ Y <- gpagen(A, Proj = TRUE, ProcD = TRUE)
 ### Add centroid size from gpagen() to metadata
 Simply join the centroid size given by `gpagen()` to the metadata table for each dataset. These data will be used later to quantify allometry.
 ```{r}
+#brief check that metadata and Csize actually match - this should return "TRUE" for all
+names(Y$Csize)==sp.info$All
+
 sp.info$Csize <- unname(Y$Csize)
 ```
 
@@ -205,20 +208,41 @@ Genus abbreviatons and number of outliers were inserted where needed for each ge
 
 We wrote a function, `MatchSpecShape()` to help us visualize outlier shape information. The function returns the 3D shape of specimen of interest. We can use it to compare the outliers to the median specimen in its genus.
 ```{r}
-findMeanSpec(bY.shape)
+#again, flexible coding the mean specimen into a number so adding more data that might change the mean specimen isn't a problem
+meanspec=unname(findMeanSpec(bY.shape))
 
 par <- gridPar(pt.bg="pink", pt.size = 1)
 
-plotRefToTarget(bY.shape[ , , 2], bY.shape[ , , 56], method = "vector", gridPars = par )
+#make sure that you compare outliers against mean specimens and nothing else at all times
+plotRefToTarget(bY.shape[ , , meanspec], bY.shape[ , , 56], method = "vector", gridPars = par )
 plotRefToTarget(bY.shape[ , , outliers[2]], bY.shape[ , , outliers[29]], method = "vector")
 
 ```
 
-#Basic allometry analysis
+#Align the specimen metadata with the coordinates for allometry analyses
+```{r}
+
+
+#first ensuring that sp.infor and bY.shape have the specimens in the same order, which they do not by default because bilat.symm changes the order
+#First, take out the "ind" that is left over from the bilat symm operation; this makes the dimnames comparable to sp.info$All
+dimnames(bY.shape)[[3]] <- sub(".*ind", "", dimnames(bY.shape)[[3]])
+
+#if the below gives a bunch of numbers but no NA, we are OK to re-order
+match(dimnames(bY.shape)[[3]],sp.info$All)
+
+#here it is important that you match dimnames with sp.info$All, not the other way around!
+sp.infoOrdered <- sp.info[match(dimnames(bY.shape)[[3]],sp.info$All),]
+
+#the below has to be TRUE for all if the re-ordering worked
+sp.infoOrdered$All==dimnames(bY.shape)[[3]]
+```
+
+#Allometry analyses
+
 ```{r}
 #Is there allometry in the whole sample?
 
-shape.size <- geomorph.data.frame(shape = bY.shape, size = sp.info$Csize)
+shape.size <- geomorph.data.frame(shape = bY.shape, size = sp.infoOrdered$Csize)
 dimnames(shape.size$shape)[[3]]
 Allom<-procD.allometry(shape~size, iter = 499, data = shape.size)
 
