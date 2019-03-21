@@ -221,8 +221,6 @@ plotRefToTarget(bY.shape[ , , outliers[2]], bY.shape[ , , outliers[29]], method 
 
 #Align the specimen metadata with the coordinates for allometry analyses
 ```{r}
-
-
 #first ensuring that sp.infor and bY.shape have the specimens in the same order, which they do not by default because bilat.symm changes the order
 #First, take out the "ind" that is left over from the bilat symm operation; this makes the dimnames comparable to sp.info$All
 dimnames(bY.shape)[[3]] <- sub(".*ind", "", dimnames(bY.shape)[[3]])
@@ -238,28 +236,57 @@ sp.infoOrdered$All==dimnames(bY.shape)[[3]]
 ```
 
 #Allometry analyses
-
 ```{r}
 #Is there allometry in the whole sample?
 
 shape.size <- geomorph.data.frame(shape = bY.shape, size = sp.infoOrdered$Csize)
 dimnames(shape.size$shape)[[3]]
-Allom<-procD.allometry(shape~size, iter = 499, data = shape.size)
+Allom <-procD.allometry(shape~size, iter = 499, data = shape.size)
 
 summary(Allom)
 
 plot(Allom, method="RegScore" )
 #if labels are needed for the allometry plot
-label=dimnames(shape.size$shape)[[3]]
+label=dimnames(shape.size$shape)[[3]] #put inside the brackets ^ - ,label=....
+```
 
-#is the allometry correlated with latitude; sex; population?
-Allom_Pop <- 
-Allom_Lat <-
-Allom_Sex <-
+##Is the allometry correlated with sex; latitude; population?
+```{r}
+#Attach metadata
+metadata <- read.csv("../1_Data (original data)/1_Raw/03_O_ana_-_All_Landmarked_Metadata.csv", header = T)
 
- #correlate csize with sex, population and latitude without shape 
-#check out procD.gls in the geomorph help files
+#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+UP TO HERE
+Problem - merging sp.info and metadata give 50obs not 74obs
 
+Once fixed, will have to figure out how to add sex, lat and pop into Allom 
+
+Note - hard to say what "pop" they are part of without defining that first.
+#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+#Merge sp.info and metadata
+meta.info <- merge(sp.info, metadata, by = "CatNum", sort = F)
+
+#Allometry investigating different factors
+Allom_Sex <-procD.allometry(shape~size, iter = 499, data = shape.size, sex.x)
+summary(Allom_Sex)
+
+Allom_Lat <- 
+summary(Allom_Lat)
+
+Allom_Pop <-
+Summary(Allom_Pop)
+
+#correlate csize with sex, population and latitude without shape
+       #check out procD.pgls in the geomorph help files
+CS_Sex <- procD.pgls(Shape ~CS, iter = 499, data = shape.size) #example code from Ariel's work
+Summary(CS_Sex)
+
+CS_Lat <- 
+Summary(CS_Lat)
+
+CS_Pop <- 
+Summary (CS_Pop)
 ```
 
 ### Save intermediate data 
