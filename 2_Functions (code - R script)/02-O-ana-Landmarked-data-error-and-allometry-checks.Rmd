@@ -39,9 +39,9 @@ data.raw <- read.csv("../1_Data (original data)/1_Raw/02_O_ana_-_Landmark_Data.c
 
 data <- data.raw[, 2:(dim(data.raw)[2])]  # removes LM names for geomorph
 data <- t(data)
-A <- arrayspecs(data, 135, 3,sep = NULL)  # convert to 3D array w 405 pts & 3D coords
+A_ERR <- arrayspecs(data, 135, 3,sep = NULL)  # convert to 3D array w 405 pts & 3D coords
 
-plot3d(A[,,1], asp=FALSE)
+plot3d(A_ERR[,,1], asp=FALSE)
 ```
 
 ## Extract metadata table from specimen filenames in shape array
@@ -53,13 +53,13 @@ Interspersed throughout the data collection process, PG landmarked 10 specimens 
 We correct the naming scheme to be machine-readable and in the process create a list of specimen names which were landmarked twice. 
 ```{r}
 # Detect replicates
-names <- dimnames(A)[[3]]
+names <- dimnames(A_ERR)[[3]]
 isrep <- which(str_detect(names, "_ERR"))
 
 # Removing Replicates
-specimens <- c(1:86)
+specimens <- c(1:length(dimnames(A_ERR)[[3]]))
 notrep <- is.na(match(specimens, isrep))
-A <- A[ , ,notrep]
+A <- A_ERR[ , ,notrep]
 ```
 
 ### Run function to scrape filenames for metadata
@@ -209,8 +209,8 @@ findMeanSpec(bY.shape)
 
 par <- gridPar(pt.bg="pink", pt.size = 1)
 
-plotRefToTarget(bY.shape[ , , 68], bY.shape[ , , 56], method = "vector", gridPars = par )
-plotRefToTarget(bY.shape[ , , outliers[68]], bY.shape[ , , outliers[29]], method = "vector")
+plotRefToTarget(bY.shape[ , , 2], bY.shape[ , , 56], method = "vector", gridPars = par )
+plotRefToTarget(bY.shape[ , , outliers[2]], bY.shape[ , , outliers[29]], method = "vector")
 
 ```
 
@@ -222,9 +222,13 @@ shape.size <- geomorph.data.frame(shape = bY.shape, size = sp.info$Csize)
 dimnames(shape.size$shape)[[3]]
 Allom<-procD.allometry(shape~size, iter = 499, data = shape.size)
 
+summary(Allom)
+
 plot(Allom, method="RegScore" )
 #if labels are needed for the allometry plot
 label=dimnames(shape.size$shape)[[3]]
+
+
 
 #is the allometry correlated with latitude; sex; population?
 Allom_Pop <- 
