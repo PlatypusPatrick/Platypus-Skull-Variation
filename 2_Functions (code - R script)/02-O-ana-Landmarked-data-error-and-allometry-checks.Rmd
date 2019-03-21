@@ -48,9 +48,9 @@ plot3d(A[,,1], asp=FALSE)
 The coordinate data is just shape data unless we can extract any information the landmarker put in each specimen's filename. Starting here, we make a metadata table with specimens in the same order as their coordinates for future analyses. 
 
 ### Fix naming of replicate filenames (included to measure user error)
-Interspersed throughout the data collection process, AEM landmarked 10 specimens twice. Their specimen names included "_ERR", however, not always in the same place in the filename. 
+Interspersed throughout the data collection process, PG landmarked 10 specimens twice. Their specimen names included "_ERR", however, not always in the same place in the filename. 
 
-We correct the naming scheme to be machine-readable and in the process create a list of specimen names which were landmarked twice. In script 02-calculate-user-error.Rmd, we use this list to analyze user error relative to (biological) variation in our sample.
+We correct the naming scheme to be machine-readable and in the process create a list of specimen names which were landmarked twice. 
 ```{r}
 # Detect replicates
 names <- dimnames(A)[[3]]
