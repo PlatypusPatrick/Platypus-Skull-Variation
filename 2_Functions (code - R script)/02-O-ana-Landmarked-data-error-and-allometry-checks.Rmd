@@ -254,32 +254,44 @@ label=dimnames(shape.size$shape)[[3]] #put inside the brackets ^ - ,label=....
 ```{r}
 #Attach metadata
 metadata <- read.csv("../1_Data (original data)/1_Raw/03_O_ana_-_All_Landmarked_Metadata.csv", header = T)
-
-#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-UP TO HERE
-Problem - merging sp.info and metadata give 50obs not 74obs
-
-Once fixed, will have to figure out how to add sex, lat and pop into Allom 
-
-Note - hard to say what "pop" they are part of without defining that first.
-#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+metadata$CatNum <- gsub("-", "x", metadata$CatNum)  #Make metadata catnums same as sp.info
+metadata$CatNum <- gsub("M0", "M", metadata$CatNum)  #Make metadata catnums same as sp.info
 
 #Merge sp.info and metadata
 meta.info <- merge(sp.info, metadata, by = "CatNum", sort = F)
 
 #Allometry investigating different factors
-Allom_Sex <-procD.allometry(shape~size, iter = 499, data = shape.size, sex.x)
+AllometryGDF <- geomorph.data.frame(shape=bY.shape, size=meta.info$Csize, sex= meta.info$Sex, Lat=meta.info$Latitude)
+
+Allom_Sex <-procD.allometry(shape~size, ~sex, iter = 499, data = AllometryGDF)
 summary(Allom_Sex)
 
-Allom_Lat <- 
+Allom_Lat <-procD.lm(shape~size*Lat, iter = 499, data = AllometryGDF)
 summary(Allom_Lat)
+
+plot(Allom_Lat,method="RegScore")
+
+example:
+(x, type = c("diagnostics", "regression", "PC"),  outliers = FALSE, predictor = NULL, reg.type = c("CRC", "PredLine", "RegScore"), ...)
+https://www.rdocumentation.org/packages/geomorph/versions/3.0.7/topics/plot.procD.lm
+
+plot(Allom_Lat, type = "regression"), predictor = meta.info$Latitude)
 
 Allom_Pop <-
 Summary(Allom_Pop)
 
+
+#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+UP TO HERE
+
+Note - hard to say what "pop" they are part of without defining that first.
+#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
 #correlate csize with sex, population and latitude without shape
        #check out procD.pgls in the geomorph help files
-CS_Sex <- procD.pgls(Shape ~CS, iter = 499, data = shape.size) #example code from Ariel's work
+CS_Sex <- procD.pgls(Shape ~CS, iter = 499, data = AllometryGDF) #example code from Ariel's work
 Summary(CS_Sex)
 
 CS_Lat <- 
