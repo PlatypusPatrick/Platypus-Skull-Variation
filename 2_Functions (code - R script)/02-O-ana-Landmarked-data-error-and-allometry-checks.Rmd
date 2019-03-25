@@ -23,6 +23,8 @@ library(geomorph)
 
 Viewbox puts the most recent specimen in the first row of the output .csv file, which is why we take the 10 initial specimens from the last rows of the coordinate dataset. 
 
+##VW: DO YOU NEED THE BELOW? IT SHOULD WORK AS IS BECAUSE THIS IS RMD. I AM RUNNING EVERYTHING FINE WITHOUT IT
+
 ```{r}
 setwd("D:/Github_folders/Platypus-Skull-Variation/1_Data (original data)/1_Raw") 
 ```
@@ -122,7 +124,7 @@ Y <- gpagen(A, Proj = TRUE, ProcD = TRUE)
 ### Add centroid size from gpagen() to metadata
 Simply join the centroid size given by `gpagen()` to the metadata table for each dataset. These data will be used later to quantify allometry.
 ```{r}
-#brief check that metadata and Csize actually match - this should return "TRUE" for all
+#brief check that metadata and Csize match - this should return "TRUE" for all
 names(Y$Csize)==sp.info$All
 
 sp.info$Csize <- unname(Y$Csize)
@@ -257,8 +259,18 @@ metadata <- read.csv("../1_Data (original data)/1_Raw/03_O_ana_-_All_Landmarked_
 metadata$CatNum <- gsub("-", "x", metadata$CatNum)  #Make metadata catnums same as sp.info
 metadata$CatNum <- gsub("M0", "M", metadata$CatNum)  #Make metadata catnums same as sp.info
 
-#Merge sp.info and metadata
+#The below should not give NAs if the names of one data frame are present in the other
+match(sp.info$CatNum,metadata$CatNum)
+
+#Merge sp.info and metadata; adding rownames just to make it easier to check for matches
 meta.info <- merge(sp.info, metadata, by = "CatNum", sort = F)
+rownames (meta.info)= meta.info$CatNum
+
+#Making sure bY.shape and meta.info$Csize match up; they don't seem to!
+dimnames(bY.shape)[[3]]
+rownames(meta.info)
+
+
 
 #Allometry investigating different factors
 AllometryGDF <- geomorph.data.frame(shape=bY.shape, size=meta.info$Csize, sex= meta.info$Sex, Lat=meta.info$Latitude)
