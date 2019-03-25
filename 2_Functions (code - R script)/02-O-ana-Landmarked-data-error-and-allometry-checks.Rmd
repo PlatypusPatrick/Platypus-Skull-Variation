@@ -259,21 +259,24 @@ metadata <- read.csv("../1_Data (original data)/1_Raw/03_O_ana_-_All_Landmarked_
 metadata$CatNum <- gsub("-", "x", metadata$CatNum)  #Make metadata catnums same as sp.info
 metadata$CatNum <- gsub("M0", "M", metadata$CatNum)  #Make metadata catnums same as sp.info
 
-#The below should not give NAs if the names of one data frame are present in the other
+#VW: The below should not give NAs if the names of one data frame are present in the other
 match(sp.info$CatNum,metadata$CatNum)
 
 #Merge sp.info and metadata; adding rownames just to make it easier to check for matches
 meta.info <- merge(sp.info, metadata, by = "CatNum", sort = F)
 rownames (meta.info)= meta.info$CatNum
 
-#Making sure bY.shape and meta.info$Csize match up; they don't seem to!
+#VW: Making sure bY.shape and meta.info$Csize match up; they don't seem to!
 dimnames(bY.shape)[[3]]
 rownames(meta.info)
 
 
-
 #Allometry investigating different factors
 AllometryGDF <- geomorph.data.frame(shape=bY.shape, size=meta.info$Csize, sex= meta.info$Sex, Lat=meta.info$Latitude)
+
+#VW: Check if using this data frame returns the same allometry result if run without any other factors - a good way of checking if all is still well!
+Allom_simple <-procD.allometry(shape~size, iter = 499, data = AllometryGDF)
+summary(Allom_simple)
 
 Allom_Sex <-procD.allometry(shape~size, ~sex, iter = 499, data = AllometryGDF)
 summary(Allom_Sex)
