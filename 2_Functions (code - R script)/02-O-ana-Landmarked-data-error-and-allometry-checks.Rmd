@@ -208,10 +208,11 @@ We can examine the landmark placements in outliers as compared to the specimen c
 
 Genus abbreviatons and number of outliers were inserted where needed for each genus. This code was only used once: after all landmarks were captured and before the other major analyses were completed.
 
-We wrote a function, `MatchSpecShape()` to help us visualize outlier shape information. The function returns the 3D shape of specimen of interest. We can use it to compare the outliers to the median specimen in its genus.
+Visualize outlier shape information. The block below returns the 3D shape of specimen of interest. We can use it to compare the outliers to the median specimen in its genus.
 ```{r}
-#again, flexible coding the mean specimen into a number so adding more data that might change the mean specimen isn't a problem
+# Find the mean specimen
 meanspec=unname(findMeanSpec(bY.shape))
+summary(meanspec)
 
 par <- gridPar(pt.bg="pink", pt.size = 1)
 
@@ -223,87 +224,98 @@ plotRefToTarget(bY.shape[ , , outliers[2]], bY.shape[ , , outliers[29]], method 
 
 #Align the specimen metadata with the coordinates for allometry analyses
 ```{r}
-#first ensuring that sp.infor and bY.shape have the specimens in the same order, which they do not by default because bilat.symm changes the order
-#First, take out the "ind" that is left over from the bilat symm operation; this makes the dimnames comparable to sp.info$All
+##Ensure that sp.infor and bY.shape have the specimens in the same order, which they do not by default because bilat.symm changes the order
+#Secondly take out the "ind" that is left over from the bilat symm operation; this makes the dimnames comparable to sp.info$All
 dimnames(bY.shape)[[3]] <- sub(".*ind", "", dimnames(bY.shape)[[3]])
 
-#if the below gives a bunch of numbers but no NA, we are OK to re-order
+#If the below gives numbers but no NA, we are OK to re-order
 match(dimnames(bY.shape)[[3]],sp.info$All)
 
-#here it is important that you match dimnames with sp.info$All, not the other way around!
+#Here it is important that you match dimnames with sp.info$All, not the other way around!
 sp.infoOrdered <- sp.info[match(dimnames(bY.shape)[[3]],sp.info$All),]
 
-#the below has to be TRUE for all if the re-ordering worked
+#The below has to be TRUE for all if the re-ordering worked
 sp.infoOrdered$All==dimnames(bY.shape)[[3]]
 ```
 
 #Allometry analyses
 ```{r}
 #Is there allometry in the whole sample?
-
 shape.size <- geomorph.data.frame(shape = bY.shape, size = sp.infoOrdered$Csize)
 dimnames(shape.size$shape)[[3]]
 Allom <-procD.allometry(shape~size, iter = 499, data = shape.size)
 
 summary(Allom)
 
-plot(Allom, method="RegScore" )
-#if labels are needed for the allometry plot
-label=dimnames(shape.size$shape)[[3]] #put inside the brackets ^ - ,label=....
+plot(Allom, method="RegScore" ); labels=dimnames(shape.size$shape)[[3]] 
+
+#Allometry plot with sepcimen names
+plot(Allom, method="RegScore" ,label=dimnames(shape.size$shape)[[3]])
 ```
 
-##Is the allometry correlated with sex; latitude; population?
+## Attach metadata for further analysis. 
 ```{r}
-#Attach metadata
+#Attach metadata 
 metadata <- read.csv("../1_Data (original data)/1_Raw/03_O_ana_-_All_Landmarked_Metadata.csv", header = T)
+
+#Make CatNums from metadata the same as CatNums from sp.info 
 metadata$CatNum <- gsub("-", "x", metadata$CatNum)  #Make metadata catnums same as sp.info
 metadata$CatNum <- gsub("M0", "M", metadata$CatNum)  #Make metadata catnums same as sp.info
 
-#VW: The below should not give NAs if the names of one data frame are present in the other
+#Should not give NAs if the names of one data frame are present in the other
 match(sp.info$CatNum,metadata$CatNum)
 
 #Merge sp.info and metadata; adding rownames just to make it easier to check for matches
 meta.info <- merge(sp.info, metadata, by = "CatNum", sort = F)
 rownames (meta.info)= meta.info$CatNum
+```
 
-#VW: Making sure bY.shape and meta.info$Csize match up; they don't seem to!
-dimnames(bY.shape)[[3]]
-rownames(meta.info)
-
-
+##Is the allometry correlated with sex; latitude; population?
+```{r}
 #Allometry investigating different factors
 AllometryGDF <- geomorph.data.frame(shape=bY.shape, size=meta.info$Csize, sex= meta.info$Sex, Lat=meta.info$Latitude)
 
-#VW: Check if using this data frame returns the same allometry result if run without any other factors - a good way of checking if all is still well!
+#Allometry (same as above but checking with added AllometryGDF - Should give same results)
 Allom_simple <-procD.allometry(shape~size, iter = 499, data = AllometryGDF)
 summary(Allom_simple)
 
+#Allometry with Sex
 Allom_Sex <-procD.allometry(shape~size, ~sex, iter = 499, data = AllometryGDF)
 summary(Allom_Sex)
 
+#Allometry with Sex as an interaction
+Allom_Sex <-procD.lm(shape~size*sex, iter = 499, data = AllometryGDF)
+summary(Allom_Sex)
+
+#Allometry with Sex as alinear model
+Allom_Sex <-procD.lm(shape~size+sex, iter = 499, data = AllometryGDF)
+summary(Allom_Sex) 
+
+#Practally the same result for sex under all three tests (>0.001 diference - still significant)
+
+#Allometry with Latitude as an interaction
 Allom_Lat <-procD.lm(shape~size*Lat, iter = 499, data = AllometryGDF)
 summary(Allom_Lat)
+#significant p vaule though little residual significance
 
-plot(Allom_Lat,method="RegScore")
+#Latitude and Centroid size - not signifcant 
+summary(lm(meta.info$Csize~meta.info$Latitude))
 
-example:
-(x, type = c("diagnostics", "regression", "PC"),  outliers = FALSE, predictor = NULL, reg.type = c("CRC", "PredLine", "RegScore"), ...)
-https://www.rdocumentation.org/packages/geomorph/versions/3.0.7/topics/plot.procD.lm
+#Weight and Centroid size - very signifcant 
+summary(lm(meta.info$Csize~meta.info$Weight..g.))
 
-plot(Allom_Lat, type = "regression"), predictor = meta.info$Latitude)
+plot(meta.info$Csize~meta.info$Weight..g.,col=factor(meta.info$Sex))
+#Red: Male
+#Green: NA
+#Black: Female
 
+#Allometry looking at population difference
 Allom_Pop <-
 Summary(Allom_Pop)
+```
 
-
-#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-UP TO HERE
-
-Note - hard to say what "pop" they are part of without defining that first.
-#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
+##Allometry with centroid size
+```{r}
 #correlate csize with sex, population and latitude without shape
        #check out procD.pgls in the geomorph help files
 CS_Sex <- procD.pgls(Shape ~CS, iter = 499, data = AllometryGDF) #example code from Ariel's work
@@ -315,5 +327,3 @@ Summary(CS_Lat)
 CS_Pop <- 
 Summary (CS_Pop)
 ```
-
-### Save intermediate data 
