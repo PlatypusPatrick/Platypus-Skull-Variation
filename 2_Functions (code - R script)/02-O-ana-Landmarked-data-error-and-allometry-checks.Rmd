@@ -279,27 +279,29 @@ AllometryGDF <- geomorph.data.frame(shape=bY.shape, size=meta.info$Csize, sex= m
 Allom_simple <-procD.allometry(shape~size, iter = 499, data = AllometryGDF)
 summary(Allom_simple)
 
-#Allometry with Sex
+## SEX
+#Allometry with sex
 Allom_Sex <-procD.allometry(shape~size, ~sex, iter = 499, data = AllometryGDF)
 summary(Allom_Sex)
 
-#Allometry with Sex as an interaction
+#Allometry with sex as an interaction
 Allom_Sex <-procD.lm(shape~size*sex, iter = 499, data = AllometryGDF)
 summary(Allom_Sex)
 
-#Allometry with Sex as alinear model
+#Allometry with Sex as a linear model
 Allom_Sex <-procD.lm(shape~size+sex, iter = 499, data = AllometryGDF)
 summary(Allom_Sex) 
-
 #Practally the same result for sex under all three tests (>0.001 diference - still significant)
 
-#Allometry with Latitude as an interaction
-Allom_Lat <-procD.lm(shape~size*Lat, iter = 499, data = AllometryGDF)
-summary(Allom_Lat)
-#significant p vaule though little residual significance
+#Allometry with individual Sex as an interaction
+Allom_Sex_M <-procD.lm(shape~size*sex(c("Male"), iter = 499, data = AllometryGDF)
+summary(Allom_Sex_M)
 
-#Latitude and Centroid size - not signifcant 
-summary(lm(meta.info$Csize~meta.info$Latitude))
+Allom_Sex_F <-procD.lm(shape~size*sex(c("Male"), iter = 499, data = AllometryGDF)
+summary(Allom_Sex_F)
+
+Allom_Sex_NA <-procD.lm(shape~size*sex(!Male), iter = 499, data = AllometryGDF)
+summary(Allom_Sex_NA)
 
 #Weight and Centroid size - very signifcant 
 summary(lm(meta.info$Csize~meta.info$Weight..g.))
@@ -309,7 +311,17 @@ plot(meta.info$Csize~meta.info$Weight..g.,col=factor(meta.info$Sex))
 #Green: NA
 #Black: Female
 
-#Allometry looking at population difference
+## LATITUDE
+#Allometry with Latitude as an interaction
+Allom_Lat <-procD.lm(shape~size*Lat, iter = 499, data = AllometryGDF)
+summary(Allom_Lat)
+#significant p vaule though little residual significance
+
+#Latitude and Centroid size - not signifcant 
+summary(lm(meta.info$Csize~meta.info$Latitude))
+
+## POPULATION
+#Allometry looking at Population difference
 Allom_Pop <-
 Summary(Allom_Pop)
 ```
