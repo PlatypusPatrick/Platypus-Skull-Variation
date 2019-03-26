@@ -272,7 +272,7 @@ rownames (meta.info)= meta.info$CatNum
 
 ##Is the allometry correlated with sex; latitude; population?
 ```{r}
-#Allometry investigating different factors
+#Define the data frame
 AllometryGDF <- geomorph.data.frame(shape=bY.shape, size=meta.info$Csize, sex= meta.info$Sex, Lat=meta.info$Latitude)
 
 #Allometry (same as above but checking with added AllometryGDF - Should give same results)
@@ -294,7 +294,7 @@ plot(meta.info$Csize, Allom_Sex$Reg.proj, xlab = "Centroid size", ylab= "Regress
 
 plot(meta.info$Csize, Allom_Sex$pred.val, xlab = "Centroid size", ylab= "Regression Score", cex=0.5, pch = 16, col= grp.col)
 
-#Allometry with sex as an interaction
+#Allometry with sex as an interaction in a linear model
 Allom_Sex <-procD.lm(shape~size*sex, iter = 499, data = AllometryGDF)
 summary(Allom_Sex)
 
@@ -320,8 +320,6 @@ AllometryGDF.f <- geomorph.data.frame(shape=shape.f, size=metadata.f$Csize, sex=
 
 Allom_Sex_F <-procD.lm(shape~size, iter = 499, data = AllometryGDF.f)
 summary(Allom_Sex_F) 
-
-
 
 #Weight and Centroid size - very signifcant 
 summary(lm(meta.info$Csize~meta.info$Weight..g.))
