@@ -284,6 +284,16 @@ summary(Allom_simple)
 Allom_Sex <-procD.allometry(shape~size, ~sex, iter = 499, data = AllometryGDF)
 summary(Allom_Sex)
 
+#Plot the allometry
+color.key <- c("Red","Blue", "Black")
+grp <- as.factor(meta.info$Sex)
+names(color.key) <- sort(unique(grp))
+grp.col <- color.key[match(grp, names(color.key))]
+
+plot(meta.info$Csize, Allom_Sex$Reg.proj, xlab = "Centroid size", ylab= "Regression Score", cex=0.5, pch = 16, col= grp.col)
+
+plot(meta.info$Csize, Allom_Sex$pred.val, xlab = "Centroid size", ylab= "Regression Score", cex=0.5, pch = 16, col= grp.col)
+
 #Allometry with sex as an interaction
 Allom_Sex <-procD.lm(shape~size*sex, iter = 499, data = AllometryGDF)
 summary(Allom_Sex)
@@ -293,15 +303,25 @@ Allom_Sex <-procD.lm(shape~size+sex, iter = 499, data = AllometryGDF)
 summary(Allom_Sex) 
 #Practally the same result for sex under all three tests (>0.001 diference - still significant)
 
-#Allometry with individual Sex as an interaction
-Allom_Sex_M <-procD.lm(shape~size*sex(c("Male"), iter = 499, data = AllometryGDF)
+#Allometry with individual Sex as an interaction - Males
+index.m <- which(meta.info$Sex == "Male")
+metadata.m <- meta.info[index.m, ]
+shape.m <- bY.shape[, , index.m]
+AllometryGDF.m <- geomorph.data.frame(shape=shape.m, size=metadata.m$Csize, sex= metadata.m$Sex)
+
+Allom_Sex_M <-procD.lm(shape~size, iter = 499, data = AllometryGDF.m)
 summary(Allom_Sex_M)
 
-Allom_Sex_F <-procD.lm(shape~size*sex(c("Male"), iter = 499, data = AllometryGDF)
-summary(Allom_Sex_F)
+#Allometry with individual Sex as an interaction - Females
+index.f <- which(meta.info$Sex == "Female")
+metadata.f <- meta.info[index.f, ]
+shape.f <- bY.shape[, , index.f]
+AllometryGDF.f <- geomorph.data.frame(shape=shape.f, size=metadata.f$Csize, sex= metadata.f$Sex)
 
-Allom_Sex_NA <-procD.lm(shape~size*sex(!Male), iter = 499, data = AllometryGDF)
-summary(Allom_Sex_NA)
+Allom_Sex_F <-procD.lm(shape~size, iter = 499, data = AllometryGDF.f)
+summary(Allom_Sex_F) 
+
+
 
 #Weight and Centroid size - very signifcant 
 summary(lm(meta.info$Csize~meta.info$Weight..g.))
