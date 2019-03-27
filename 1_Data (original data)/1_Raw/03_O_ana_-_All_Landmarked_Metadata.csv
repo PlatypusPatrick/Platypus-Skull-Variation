@@ -1,75 +1,75 @@
-﻿Genus, Species,Museum,CatNum,Sex,State,Locality Name,Latitude,Longitude,Notes,Weight (g),Total (mm),Tail (mm),Hindfoot (mm)
-Ornithorhynchus,anatinus,QM,J20672,N/A,Queensland,Mt Molloy to Rifle Ck,-16.666,145.333,,,,,
-Ornithorhynchus,anatinus,QM,JM1086,N/A,Queensland,Fleays Wildlife Sanctuary (in captivity),-28.108,153.444,Captive Bread,,,,
-Ornithorhynchus,anatinus,QM,JM18104,Male,Queensland,"Anstead, 100 Layfield Road, in Pullen Pullen Creek",-27.546,152.885,Severe drought period,,,,
-Ornithorhynchus,anatinus,QM,JM19983,Male,Queensland,19 Richards road Camp Mountain via Samford,-27.392,151.864,,,,,
-Ornithorhynchus,anatinus,QM,JM20596,N/A,Queensland,Mary River via Maryborough,-25.5,152.85,,,,,
-Ornithorhynchus,anatinus,QM,JM6919,N/A,Queensland,"Ravensbourne, via Crows Nest",-27.366,152.166,,,,,
-Ornithorhynchus,anatinus,QM,JM8106,N/A,Queensland,North Pine Dam,-27.25,152.9,Mount to Townsville. Pes:34,1062,345,98,42
-Ornithorhynchus,anatinus,AM,M8258,Female,New South Wales,"Kangaroo R, 4 miles E of Kangaroo Valley",-33.733,150.616,,,,,
-Ornithorhynchus,anatinus,AM,M8625,Male,New South Wales,"Blacktown, 1 mile N of Bathurst",-33.4,149.566,,,,,
-Ornithorhynchus,anatinus,AM,M11237,Female,New South Wales,"Lake Jindabyne, Snowy R",-36.4,148.633,,,,,
-Ornithorhynchus,anatinus,MV,C1435,N/A,Victoria,Kew,-37.8,145.03,,,,,
-Ornithorhynchus,anatinus,MV,C2413,Male,Victoria,Yarrawonga Weir,-36,146,,,,,
-Ornithorhynchus,anatinus,MV,C2414,Male,Victoria,Yarrawonga Weir,-36,146,,,,,
-Ornithorhynchus,anatinus,MV,C2459,N/A,Victoria,Yarrawonga Weir,-36,146,,,,,
-Ornithorhynchus,anatinus,MV,C2502,N/A,Victoria,Wangaratta,-36.35,146.32,,,,,
-Ornithorhynchus,anatinus,MV,C2935,N/A,Victoria,Kallista,-37.88,145.37,,,,,
-Ornithorhynchus,anatinus,MV,C7238,Male,Victoria,"Mansfield,Delatite River",-37.03,146.08,,1134,475,118,55
-Ornithorhynchus,anatinus,MV,C7239,Male,Victoria,"Mansfield,Delatite River",-37.03,146.08,,1047.8,450,105,50
-Ornithorhynchus,anatinus,MV,C11286,Female,Victoria,11.2 km downstream of Mitta River from Eskdale,-36.47,147.25,,1253.3,460,126,60
-Ornithorhynchus,anatinus,MV,C16989,Male,Victoria,"Goulburn River,22.4 km north of Shepparton",-36.2,145.25,,2595,610,115,
-Ornithorhynchus,anatinus,MV,C16997,Male,Victoria,"Mitta Mitta arm,Lake Hume,2.4 km from Bethanga Road",-36.13,147.03,,2400,540,150,69
-Ornithorhynchus,anatinus,MV,C16998,Male,Victoria,Thomson River,-38.12,147.07,,1929,505,130,
-Ornithorhynchus,anatinus,MV,C16999,Male,Victoria,Snobs Creek,-37.27,145.87,,1021,470,125,
-Ornithorhynchus,anatinus,MV,C17000,Female,Victoria,"Swan Reach,Tambo River",-37.83,147.87,Muscle tissue kept for Haemoglobin analysis,933,440,105,44
-Ornithorhynchus,anatinus,MV,C17028,Male,Victoria,Ascot Vale,-37.78,144.92,,1246,495,140,50
-Ornithorhynchus,anatinus,MV,C17031,Male,Victoria,Nagambie,-36.78,145.15,,2440,530,153,
-Ornithorhynchus,anatinus,MV,C17040,Male,Victoria,Junction of Murray River & Rufus River,-34.07,141.23,,2156,560,140,
-Ornithorhynchus,anatinus,MV,C17253,Male,Victoria,Snobs Creek,-37.27,145.88,,1360,510,120,
-Ornithorhynchus,anatinus,MV,C17256,Male,Victoria,Yarrawonga,-36.02,146,,2073,516,148,
-Ornithorhynchus,anatinus,MV,C24057,N/A,Victoria,"Tambo River,2 km upstream from Princes Highway",-37.45,147.83,,,,,
-Ornithorhynchus,anatinus,MV,C24058,Female,Victoria,Cumberland River,-38.57,143.9,,,,,
-Ornithorhynchus,anatinus,MV,C28818,N/A,Victoria,Hamilton,-37.75,142.03,,1235,440,110,67
-Ornithorhynchus,anatinus,MV,C28827,Female,Victoria,"Glenelg River, Roseneath bridge",-37.45,141.28,Road kill,1145,420,125,50
-Ornithorhynchus,anatinus,MV,C29678,N/A,Victoria,"Goulburn River, Eildon Deer Park, 4 km SE of Thornton",-37.27,145.82,Drowned in net. T.M.G?,1970,540,160,75
-Ornithorhynchus,anatinus,MV,C29680,Female,Victoria,"Mitchell River, Walpa",-37.8,147.43,Drowned in net. T.M.G? Skin sample,1023,430,110,51
-Ornithorhynchus,anatinus,MV,C29771,Female,Victoria,"Merri R, 2.5 km downstream of Sawpit Ck",-38.33,142.48,,1167,418,95,43
-Ornithorhynchus,anatinus,MV,C29796,Male,Victoria,Hopkins River (above Allansford),-38.38,142.6,Drowned in net,1264,415,110,40
-Ornithorhynchus,anatinus,MV,C29872,Female,Victoria,Lake Burrambeet,-37.48,148.63,Caught in gill net,1315.1,485,112,58.3
-Ornithorhynchus,anatinus,MV,C29873,Female,Victoria,Lake Lauriston (Lauriston Reservoir (maybe),-37.27,144.38,Caught in gill net,1064.3,470,120,54.6
-Ornithorhynchus,anatinus,MV,C29877,N/A,Victoria,"Goulburn River, Eildon Deer Park, 4 km SE of Thornton",-37.27,145.82,Drowned in net,,,,
-Ornithorhynchus,anatinus,MV,C29879,N/A,Victoria,"Goulburn River, Trawool",-37.1,145.22,Drowned in net,1714,480,100,59
-Ornithorhynchus,anatinus,MV,C29881,Male,Victoria,"Near Navigators Bluestone Bridge, near Eureka St, Ballarat",-37.57,143.85,,1402,490,110,47
-Ornithorhynchus,anatinus,QVM,M1963-1-245,Male,Tasmania,Bridport - on beach,-41.003,147.442,Found dead - bill length 45mm                     ,885.9,426,90,
-Ornithorhynchus,anatinus,QVM,M1964-1-246,Male,Tasmania,North Lilydale,-41.227,147.252,Found dead,1700,524,124,
-Ornithorhynchus,anatinus,QVM,M1965-1-164,Male,Tasmania,Devonport,-41.187,146.362,Dog caught,,530,128,
-Ornithorhynchus,anatinus,QVM,M1968-1-36,Female,Tasmania,Westbury - 10 miles north,-41.489,146.845,Found dead,1600,502,115,
-Ornithorhynchus,anatinus,QVM,M1986-1-38,Male,Tasmania,Hagley,-41.486,146.906,Found dead,920,370,85,
-Ornithorhynchus,anatinus,QVM,M1986-1-47,Male,Tasmania,Branxholm,-41.161,147.739,Found dead,1750,510,130,
-Ornithorhynchus,anatinus,QVM,M1987-1-98,Male,Tasmania,Boyer,-42.778,147.084,Additional measurements: spurs 15mm Drowned in fish trap.           ,2000,530,130,
-Ornithorhynchus,anatinus,QVM,M1987-1-101,Female,Tasmania,Boyer,-42.778,147.084,Drowned in fish trap                     ,1250,485,110,
-Ornithorhynchus,anatinus,QVM,M1987-1-105,Male,Tasmania,Boyer,-42.778,147.084,Drowned in fish trap.                   ,2000,497,130,
-Ornithorhynchus,anatinus,QVM,M1987-1-108,Male,Tasmania,Boyer,-42.778,147.084,Additional measurements:  spurs 15mm Drowned in fish trap. ,1750,470,125,
-Ornithorhynchus,anatinus,QVM,M1988-1-34,Male,Tasmania,"Deloraine - 10km east, along Meander River",-41.557,146.616,Drowned in net.                     ,2500,575,160,
-Ornithorhynchus,anatinus,QVM,M1988-1-141,Female,Tasmania,"Deloraine - 10km east, along Meander River",-41.557,146.616,Mammary glands retained. Drowned in fish trap.                    ,1000,470,125,
-Ornithorhynchus,anatinus,QVM,M1993-1-223,Male,Tasmania,Beaconsfield,-41.191,146.799,Found dead,620,420,90,
-Ornithorhynchus,anatinus,ANWC,M01274,Female,Australian Capital Territory,"Uriarra Crossing, Murrumbidgee River, West of Canbera",-35.241,148.95,,,,,
-Ornithorhynchus,anatinus,ANWC,M01279,Male,Australian Capital Territory,Queanbeyan/ Molonglo River junction,-35.337,149.23,,,,,
-Ornithorhynchus,anatinus,ANWC,M03560,N/A,New South Wales,"Googong Dam, Queanbeyan",-35.45,149.258,,,,,
-Ornithorhynchus,anatinus,ANWC,M03696,N/A,Australian Capital Territory,Murrumbidgee River between Kambah & Cotter River junction,-35.366,148.983,,,,,
-Ornithorhynchus,anatinus,ANWC,M03699,Male,Australian Capital Territory,Murrumbidgee River between Kambah & Cotter River junction,-35.366,148.983,Murrumbidgee & ACT Waters,,,,
-Ornithorhynchus,anatinus,ANWC,M03700,Male,Australian Capital Territory,Murrumbidgee River between Kambah & Cotter River junction,-35.366,148.983,Murrumbidgee & ACT Waters,,,,
-Ornithorhynchus,anatinus,ANWC,M03703,N/A,Australian Capital Territory,Murrumbidgee River between Kambah & Cotter River junction,-35.366,148.983,,,,,
-Ornithorhynchus,anatinus,ANWC,M03704,N/A,Australian Capital Territory,Murrumbidgee River between Kambah & Cotter River junction,-35.366,148.983,,,,,
-Ornithorhynchus,anatinus,ANWC,M03707,N/A,Australian Capital Territory,Murrumbidgee River between Kambah & Cotter River junction,-35.366,148.983,,,,,
-Ornithorhynchus,anatinus,ANWC,M03708,N/A,Australian Capital Territory,Murrumbidgee River between Kambah & Cotter River junction,-35.366,148.983,,,,,
-Ornithorhynchus,anatinus,ANWC,M03730,N/A,Australian Capital Territory,"Lake Burley, Griffin, Canbera",-35.3,149.1,,,,,
-Ornithorhynchus,anatinus,ANWC,M15484,Female,Australian Capital Territory,"Warrina inlet, Lake Burley, Griffin, Canbera",-35.305,149.083,,,,,
-Ornithorhynchus,anatinus,ANWC,M18044,N/A,Australian Capital Territory,"Corin Dam, South of Canbera",-35.533,148.833,,,,,
-Ornithorhynchus,anatinus,ANWC,M18089,N/A,New South Wales,Toogong,-33.333,148.633,,,,,
-Ornithorhynchus,anatinus,SAM,M1629,N/A,Tasmania,Tasmania,-42,146.5,,,,,
-Ornithorhynchus,anatinus,SAM,M6043,Male,South Australia,Mount Gambier,-37.833,140.783,,,,,
-Ornithorhynchus,anatinus,SAM,M6298,Male,South Australia,Wellington,-35.333,139.383,Parasites held in A.H.C.,,,,
-Ornithorhynchus,anatinus,SAM,M9678,Male,South Australia,Renmark - 12 km SW (Near Murray R. just south of mouth of Pike R.),-34.266,140.683,Caught in gill net. Head/Body Length = 396,,543,147,59
-Ornithorhynchus,anatinus,SAM,M14097,Male,Tasmania,Westbury,-41.533,146.833,,,,,
+﻿Genus, Species,Museum,CatNum,Sex,State,Locality Name,Population,Latitude,Longitude,Notes,Weight (g),Total (mm),Tail (mm),Hindfoot (mm)
+Ornithorhynchus,anatinus,QM,J20672,N/A,Queensland,Mt Molloy to Rifle Ck,Northeastern Queensland,-16.666,145.333,,,,,
+Ornithorhynchus,anatinus,QM,JM1086,N/A,Queensland,Fleays Wildlife Sanctuary (in captivity),,-28.108,153.444,Captive Bread,,,,
+Ornithorhynchus,anatinus,QM,JM18104,Male,Queensland,"Anstead, 100 Layfield Road, in Pullen Pullen Creek",,-27.546,152.885,Severe drought period,,,,
+Ornithorhynchus,anatinus,QM,JM19983,Male,Queensland,19 Richards road Camp Mountain via Samford,,-27.392,151.864,,,,,
+Ornithorhynchus,anatinus,QM,JM20596,N/A,Queensland,Mary River via Maryborough,,-25.5,152.85,,,,,
+Ornithorhynchus,anatinus,QM,JM6919,N/A,Queensland,"Ravensbourne, via Crows Nest",,-27.366,152.166,,,,,
+Ornithorhynchus,anatinus,QM,JM8106,N/A,Queensland,North Pine Dam,,-27.25,152.9,Mount to Townsville. Pes:34,1062,345,98,42
+Ornithorhynchus,anatinus,AM,M8258,Female,New South Wales,"Kangaroo R, 4 miles E of Kangaroo Valley",,-33.733,150.616,,,,,
+Ornithorhynchus,anatinus,AM,M8625,Male,New South Wales,"Blacktown, 1 mile N of Bathurst",,-33.4,149.566,,,,,
+Ornithorhynchus,anatinus,AM,M11237,Female,New South Wales,"Lake Jindabyne, Snowy R",,-36.4,148.633,,,,,
+Ornithorhynchus,anatinus,MV,C1435,N/A,Victoria,Kew,,-37.8,145.03,,,,,
+Ornithorhynchus,anatinus,MV,C2413,Male,Victoria,Yarrawonga Weir,,-36,146,,,,,
+Ornithorhynchus,anatinus,MV,C2414,Male,Victoria,Yarrawonga Weir,,-36,146,,,,,
+Ornithorhynchus,anatinus,MV,C2459,N/A,Victoria,Yarrawonga Weir,,-36,146,,,,,
+Ornithorhynchus,anatinus,MV,C2502,N/A,Victoria,Wangaratta,,-36.35,146.32,,,,,
+Ornithorhynchus,anatinus,MV,C2935,N/A,Victoria,Kallista,,-37.88,145.37,,,,,
+Ornithorhynchus,anatinus,MV,C7238,Male,Victoria,"Mansfield,Delatite River",,-37.03,146.08,,1134,475,118,55
+Ornithorhynchus,anatinus,MV,C7239,Male,Victoria,"Mansfield,Delatite River",,-37.03,146.08,,1047.8,450,105,50
+Ornithorhynchus,anatinus,MV,C11286,Female,Victoria,11.2 km downstream of Mitta River from Eskdale,,-36.47,147.25,,1253.3,460,126,60
+Ornithorhynchus,anatinus,MV,C16989,Male,Victoria,"Goulburn River,22.4 km north of Shepparton",,-36.2,145.25,,2595,610,115,
+Ornithorhynchus,anatinus,MV,C16997,Male,Victoria,"Mitta Mitta arm,Lake Hume,2.4 km from Bethanga Road",,-36.13,147.03,,2400,540,150,69
+Ornithorhynchus,anatinus,MV,C16998,Male,Victoria,Thomson River,,-38.12,147.07,,1929,505,130,
+Ornithorhynchus,anatinus,MV,C16999,Male,Victoria,Snobs Creek,,-37.27,145.87,,1021,470,125,
+Ornithorhynchus,anatinus,MV,C17000,Female,Victoria,"Swan Reach,Tambo River",,-37.83,147.87,Muscle tissue kept for Haemoglobin analysis,933,440,105,44
+Ornithorhynchus,anatinus,MV,C17028,Male,Victoria,Ascot Vale,,-37.78,144.92,,1246,495,140,50
+Ornithorhynchus,anatinus,MV,C17031,Male,Victoria,Nagambie,,-36.78,145.15,,2440,530,153,
+Ornithorhynchus,anatinus,MV,C17040,Male,Victoria,Junction of Murray River & Rufus River,,-34.07,141.23,,2156,560,140,
+Ornithorhynchus,anatinus,MV,C17253,Male,Victoria,Snobs Creek,,-37.27,145.88,,1360,510,120,
+Ornithorhynchus,anatinus,MV,C17256,Male,Victoria,Yarrawonga,,-36.02,146,,2073,516,148,
+Ornithorhynchus,anatinus,MV,C24057,N/A,Victoria,"Tambo River,2 km upstream from Princes Highway",,-37.45,147.83,,,,,
+Ornithorhynchus,anatinus,MV,C24058,Female,Victoria,Cumberland River,,-38.57,143.9,,,,,
+Ornithorhynchus,anatinus,MV,C28818,N/A,Victoria,Hamilton,,-37.75,142.03,,1235,440,110,67
+Ornithorhynchus,anatinus,MV,C28827,Female,Victoria,"Glenelg River, Roseneath bridge",,-37.45,141.28,Road kill,1145,420,125,50
+Ornithorhynchus,anatinus,MV,C29678,Male,Victoria,"Goulburn River, Eildon Deer Park, 4 km SE of Thornton",,-37.27,145.82,Drowned in net. T.M.G?,1970,540,160,75
+Ornithorhynchus,anatinus,MV,C29680,Female,Victoria,"Mitchell River, Walpa",,-37.8,147.43,Drowned in net. T.M.G? Skin sample,1023,430,110,51
+Ornithorhynchus,anatinus,MV,C29771,Female,Victoria,"Merri R, 2.5 km downstream of Sawpit Ck",,-38.33,142.48,,1167,418,95,43
+Ornithorhynchus,anatinus,MV,C29796,Male,Victoria,Hopkins River (above Allansford),,-38.38,142.6,Drowned in net,1264,415,110,40
+Ornithorhynchus,anatinus,MV,C29872,Female,Victoria,Lake Burrambeet,,-37.48,148.63,Caught in gill net,1315.1,485,112,58.3
+Ornithorhynchus,anatinus,MV,C29873,Female,Victoria,Lake Lauriston (Lauriston Reservoir (maybe),,-37.27,144.38,Caught in gill net,1064.3,470,120,54.6
+Ornithorhynchus,anatinus,MV,C29877,N/A,Victoria,"Goulburn River, Eildon Deer Park, 4 km SE of Thornton",,-37.27,145.82,Drowned in net,,,,
+Ornithorhynchus,anatinus,MV,C29879,Male,Victoria,"Goulburn River, Trawool",,-37.1,145.22,Drowned in net,1714,480,100,59
+Ornithorhynchus,anatinus,MV,C29881,Male,Victoria,"Near Navigators Bluestone Bridge, near Eureka St, Ballarat",,-37.57,143.85,,1402,490,110,47
+Ornithorhynchus,anatinus,QVM,M1963-1-245,Male,Tasmania,Bridport - on beach,,-41.003,147.442,Found dead - bill length 45mm                     ,885.9,426,90,
+Ornithorhynchus,anatinus,QVM,M1964-1-246,Male,Tasmania,North Lilydale,,-41.227,147.252,Found dead,1700,524,124,
+Ornithorhynchus,anatinus,QVM,M1965-1-164,Male,Tasmania,Devonport,,-41.187,146.362,Dog caught,,530,128,
+Ornithorhynchus,anatinus,QVM,M1968-1-36,Female,Tasmania,Westbury - 10 miles north,,-41.489,146.845,Found dead,1600,502,115,
+Ornithorhynchus,anatinus,QVM,M1986-1-38,Male,Tasmania,Hagley,,-41.486,146.906,Found dead,920,370,85,
+Ornithorhynchus,anatinus,QVM,M1986-1-47,Male,Tasmania,Branxholm,,-41.161,147.739,Found dead,1750,510,130,
+Ornithorhynchus,anatinus,QVM,M1987-1-98,Male,Tasmania,Boyer,,-42.778,147.084,Additional measurements: spurs 15mm Drowned in fish trap.           ,2000,530,130,
+Ornithorhynchus,anatinus,QVM,M1987-1-101,Female,Tasmania,Boyer,,-42.778,147.084,Drowned in fish trap                     ,1250,485,110,
+Ornithorhynchus,anatinus,QVM,M1987-1-105,Male,Tasmania,Boyer,,-42.778,147.084,Drowned in fish trap.                   ,2000,497,130,
+Ornithorhynchus,anatinus,QVM,M1987-1-108,Male,Tasmania,Boyer,,-42.778,147.084,Additional measurements:  spurs 15mm Drowned in fish trap. ,1750,470,125,
+Ornithorhynchus,anatinus,QVM,M1988-1-34,Male,Tasmania,"Deloraine - 10km east, along Meander River",,-41.557,146.616,Drowned in net.                     ,2500,575,160,
+Ornithorhynchus,anatinus,QVM,M1988-1-141,Female,Tasmania,"Deloraine - 10km east, along Meander River",,-41.557,146.616,Mammary glands retained. Drowned in fish trap.                    ,1000,470,125,
+Ornithorhynchus,anatinus,QVM,M1993-1-223,Male,Tasmania,Beaconsfield,,-41.191,146.799,Found dead,620,420,90,
+Ornithorhynchus,anatinus,ANWC,M01274,Female,Australian Capital Territory,"Uriarra Crossing, Murrumbidgee River, West of Canbera",,-35.241,148.95,,,,,
+Ornithorhynchus,anatinus,ANWC,M01279,Male,Australian Capital Territory,Queanbeyan/ Molonglo River junction,,-35.337,149.23,,,,,
+Ornithorhynchus,anatinus,ANWC,M03560,N/A,New South Wales,"Googong Dam, Queanbeyan",,-35.45,149.258,,,,,
+Ornithorhynchus,anatinus,ANWC,M03696,N/A,Australian Capital Territory,Murrumbidgee River between Kambah & Cotter River junction,,-35.366,148.983,,,,,
+Ornithorhynchus,anatinus,ANWC,M03699,Male,Australian Capital Territory,Murrumbidgee River between Kambah & Cotter River junction,,-35.366,148.983,Murrumbidgee & ACT Waters,,,,
+Ornithorhynchus,anatinus,ANWC,M03700,Male,Australian Capital Territory,Murrumbidgee River between Kambah & Cotter River junction,,-35.366,148.983,Murrumbidgee & ACT Waters,,,,
+Ornithorhynchus,anatinus,ANWC,M03703,N/A,Australian Capital Territory,Murrumbidgee River between Kambah & Cotter River junction,,-35.366,148.983,,,,,
+Ornithorhynchus,anatinus,ANWC,M03704,N/A,Australian Capital Territory,Murrumbidgee River between Kambah & Cotter River junction,,-35.366,148.983,,,,,
+Ornithorhynchus,anatinus,ANWC,M03707,N/A,Australian Capital Territory,Murrumbidgee River between Kambah & Cotter River junction,,-35.366,148.983,,,,,
+Ornithorhynchus,anatinus,ANWC,M03708,N/A,Australian Capital Territory,Murrumbidgee River between Kambah & Cotter River junction,,-35.366,148.983,,,,,
+Ornithorhynchus,anatinus,ANWC,M03730,N/A,Australian Capital Territory,"Lake Burley, Griffin, Canbera",,-35.3,149.1,,,,,
+Ornithorhynchus,anatinus,ANWC,M15484,Female,Australian Capital Territory,"Warrina inlet, Lake Burley, Griffin, Canbera",,-35.305,149.083,,,,,
+Ornithorhynchus,anatinus,ANWC,M18044,N/A,Australian Capital Territory,"Corin Dam, South of Canbera",,-35.533,148.833,,,,,
+Ornithorhynchus,anatinus,ANWC,M18089,N/A,New South Wales,Toogong,,-33.333,148.633,,,,,
+Ornithorhynchus,anatinus,SAM,M1629,N/A,Tasmania,Tasmania,,-42,146.5,,,,,
+Ornithorhynchus,anatinus,SAM,M6043,Male,South Australia,Mount Gambier,,-37.833,140.783,,,,,
+Ornithorhynchus,anatinus,SAM,M6298,Male,South Australia,Wellington,,-35.333,139.383,Parasites held in A.H.C.,,,,
+Ornithorhynchus,anatinus,SAM,M9678,Male,South Australia,Renmark - 12 km SW (Near Murray R. just south of mouth of Pike R.),,-34.266,140.683,Caught in gill net. Head/Body Length = 396,,543,147,59
+Ornithorhynchus,anatinus,SAM,M14097,Male,Tasmania,Westbury,,-41.533,146.833,,,,,

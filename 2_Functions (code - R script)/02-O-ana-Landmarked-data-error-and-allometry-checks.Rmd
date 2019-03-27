@@ -23,12 +23,6 @@ library(geomorph)
 
 Viewbox puts the most recent specimen in the first row of the output .csv file, which is why we take the 10 initial specimens from the last rows of the coordinate dataset. 
 
-##VW: DO YOU NEED THE BELOW? IT SHOULD WORK AS IS BECAUSE THIS IS RMD. I AM RUNNING EVERYTHING FINE WITHOUT IT
-
-```{r}
-setwd("D:/Github_folders/Platypus-Skull-Variation/1_Data (original data)/1_Raw") 
-```
-
 ## Prepare shape data for analyses in _geomorph_
 Viewbox exports the data as a 2D array with specimens as columns and X, Y, and Z coordinates as rows for landmark. For _geomorph_, we need to convert this into a 3D array where each specimen has its own 2D array of 3 columns for XYZ coordinates and a row for each landmark. In other words, a 3D array has dimensions (p x k x n), where p is the number of landmarks, k is the dimension (2 or 3), and n is the number of specimens.
 
@@ -243,7 +237,7 @@ sp.infoOrdered$All==dimnames(bY.shape)[[3]]
 #Is there allometry in the whole sample?
 shape.size <- geomorph.data.frame(shape = bY.shape, size = sp.infoOrdered$Csize)
 dimnames(shape.size$shape)[[3]]
-Allom <-procD.allometry(shape~size, iter = 499, data = shape.size)
+Allom <-procD.lm(shape~size, iter = 499, data = shape.size)
 
 summary(Allom)
 
@@ -251,6 +245,14 @@ plot(Allom, method="RegScore" ); labels=dimnames(shape.size$shape)[[3]]
 
 #Allometry plot with sepcimen names
 plot(Allom, method="RegScore" ,label=dimnames(shape.size$shape)[[3]])
+
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  Error to fix - Plots above do not work anymore
+plot(x, type = c("diagnostics", "regression", "PC"),
+  outliers = FALSE, predictor = NULL, reg.type = c("CRC", "PredLine",
+  "RegScore"), ...)
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 ```
 
 ## Attach metadata for further analysis. 
@@ -275,13 +277,13 @@ rownames (meta.info)= meta.info$CatNum
 #Define the data frame
 AllometryGDF <- geomorph.data.frame(shape=bY.shape, size=meta.info$Csize, sex= meta.info$Sex, Lat=meta.info$Latitude)
 
-#Allometry (same as above but checking with added AllometryGDF - Should give same results)
-Allom_simple <-procD.allometry(shape~size, iter = 499, data = AllometryGDF)
+#Allometry (same as above but checking with added AllometryGDF - Gives the same results)
+Allom_simple <-procD.lm(shape~size, iter = 499, data = AllometryGDF)
 summary(Allom_simple)
 
 ## SEX
-#Allometry with sex
-Allom_Sex <-procD.allometry(shape~size, ~sex, iter = 499, data = AllometryGDF)
+#Allometry (linear model) with sex as an interaction 
+Allom_Sex <-procD.lm(shape~size*sex, iter = 499, data = AllometryGDF)
 summary(Allom_Sex)
 
 #Plot the allometry
@@ -294,14 +296,9 @@ plot(meta.info$Csize, Allom_Sex$Reg.proj, xlab = "Centroid size", ylab= "Regress
 
 plot(meta.info$Csize, Allom_Sex$pred.val, xlab = "Centroid size", ylab= "Regression Score", cex=0.5, pch = 16, col= grp.col)
 
-#Allometry with sex as an interaction in a linear model
-Allom_Sex <-procD.lm(shape~size*sex, iter = 499, data = AllometryGDF)
-summary(Allom_Sex)
-
-#Allometry with Sex as a linear model
-Allom_Sex <-procD.lm(shape~size+sex, iter = 499, data = AllometryGDF)
-summary(Allom_Sex) 
-#Practally the same result for sex under all three tests (>0.001 diference - still significant)
+#Allometry (linear model) with no interaction 
+Allom_Sex.lm <-procD.lm(shape~size+sex, iter = 499, data = AllometryGDF)
+summary(Allom_Sex.lm) 
 
 #Allometry with individual Sex as an interaction - Males
 index.m <- which(meta.info$Sex == "Male")

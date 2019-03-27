@@ -1,13 +1,9 @@
 ---
 title: "03-O-ana-Making-a-population-map"
 author: "Patrick Green & Pietro Viacava"
-date: "20-03-2019"
+date: "27-03-2019"
 output: html_document
 ---
-
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
 
 ## Load packages
 ```{r message = FALSE}
@@ -24,13 +20,13 @@ australia
 
 ##create a base plot with ggplot2
 ```{r}
-p <- ggplot() + coord_fixed() +
+bp <- ggplot() + coord_fixed() +
   xlab("") + ylab("")
 ```
 
 ##Add map to base plot
 ```{r}
-australia_messy <- p + geom_polygon(data=australia, aes(x=long, y=lat, group=group), 
+australia_messy <- bp + geom_polygon(data=australia, aes(x=long, y=lat, group=group), 
                                      colour="black", fill="white")
 
 australia_messy
@@ -52,7 +48,7 @@ australia_clean
 
 ##read GPS coordinates
 ```{r}
-LatLontest <- read.csv("C:/Users/Desktop/Pietro/Codes/LatLontest.csv")
+LatLontest <- read.csv("../1_Data (original data)/1_Raw/03_O_ana_-_All_Landmarked_Metadata.csv", header = T)
 LatLontest
 ```
 
@@ -61,8 +57,8 @@ LatLontest
 australiamap_data <- 
  australia_clean +
   geom_point(data=LatLontest, 
-             aes(x=Long, y=Lat), colour="Black", 
-             fill="Black",pch=21, size=4, alpha=I(0.7))
+             aes(x=Longitude, y=Latitude), colour="Black", 
+             fill="Black",pch=21, size=2, alpha=I(.8))
 
 australiamap_data
 ```
