@@ -232,7 +232,7 @@ sp.infoOrdered <- sp.info[match(dimnames(bY.shape)[[3]],sp.info$All),]
 sp.infoOrdered$All==dimnames(bY.shape)[[3]]
 ```
 
-#Allometry analyses
+#Allometry analyses POTENTIALLY DELETE IN FAVOUR OF BELOW
 ```{r}
 #Is there allometry in the whole sample?
 shape.size <- geomorph.data.frame(shape = bY.shape, size = sp.infoOrdered$Csize)
@@ -246,6 +246,10 @@ plot(Allom, method="RegScore" ); labels=dimnames(shape.size$shape)[[3]]
 #Allometry plot with sepcimen names
 plot(Allom, method="RegScore" ,label=dimnames(shape.size$shape)[[3]])
 
+#Test of plotting
+plot(x, type = c("diagnostics", "regression", "PC"),
+  outliers = FALSE, predictor = NULL, reg.type = c("CRC", "PredLine",
+  "RegScore"), ...)
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   Error to fix - Plots above do not work anymore
@@ -279,8 +283,33 @@ AllometryGDF <- geomorph.data.frame(shape=bY.shape, size=meta.info$Csize, sex= m
 
 #Allometry (same as above but checking with added AllometryGDF - Gives the same results)
 Allom_simple <-procD.lm(shape~size, iter = 499, data = AllometryGDF)
+Allom_simple_log <-procD.lm(shape~log(size), iter = 499, data = AllometryGDF)
 summary(Allom_simple)
+summary(Allom_simple_log)
 
+labels=as.vector(dimnames(AllometryGDF$shape)[[3]])
+
+par(mfrow=c(1,2))
+#PlotAllometry doesnt't work but the alternativbe from teh helpfile does
+plotAllometry(Allom_simple, size=AllometryGDF$size, method="RegScore", logsz = FALSE, pch=19, col= "pink")
+
+plot(Allom_simple, type = "regression", reg.type = "RegScore", predictor = AllometryGDF$size, pch = 19)
+
+
+
+
+#if logging, results are totally different
+plotAllometry(Allom_simple, size=AllometryGDF$size, method="RegScore", logsz = TRUE, pch=19)
+
+plot(Allom_simple, type = "regression", reg.type = "RegScore", predictor =log(AllometryGDF$size), pch = 19)
+
+```
+
+
+#Work on below when above works
+
+
+```{r}
 ## SEX
 #Allometry (linear model) with sex as an interaction 
 Allom_Sex <-procD.lm(shape~size*sex, iter = 499, data = AllometryGDF)
@@ -292,7 +321,13 @@ grp <- as.factor(meta.info$Sex)
 names(color.key) <- sort(unique(grp))
 grp.col <- color.key[match(grp, names(color.key))]
 
-plot(meta.info$Csize, Allom_Sex$Reg.proj, xlab = "Centroid size", ylab= "Regression Score", cex=0.5, pch = 16, col= grp.col)
+
+plotAllometry(Allom_Sex, size = AllometryGDF$size, logsz = TRUE, method = "RegScore", pch = 19)
+
+
+plotAllometry(Allom_Sex, size=AllometryGDF$size,  cex=0.5, pch = 16, col= grp.col, logsz=FALSE, method="RegScore")
+
+plot(Allom_Sex, size=AllometryGDF$size, , xlab = "Centroid size", ylab= "Regression Score", cex=0.5, pch = 16, col= grp.col)
 
 plot(meta.info$Csize, Allom_Sex$pred.val, xlab = "Centroid size", ylab= "Regression Score", cex=0.5, pch = 16, col= grp.col)
 
