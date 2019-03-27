@@ -246,9 +246,13 @@ plot(Allom, method="RegScore" ); labels=dimnames(shape.size$shape)[[3]]
 #Allometry plot with sepcimen names
 plot(Allom, method="RegScore" ,label=dimnames(shape.size$shape)[[3]])
 
-plot(Allom, type = c(""regression"), outliers = FALSE, predictor = NULL, reg.type = c(  "RegScore")
+plot(Allom, type = c("regression"), outliers = FALSE, predictor = NULL, reg.type = c("RegScore"))
 
 plotAllometry(Allom, method = "RegScore")
+
+
+
+
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   Error to fix - Plots above do not work anymore
@@ -286,6 +290,55 @@ AllometryGDF <- geomorph.data.frame(shape=bY.shape, size=meta.info$Csize, sex= m
 #Allometry (same as above but checking with added AllometryGDF - Gives the same results)
 Allom_simple <-procD.lm(shape~size, iter = 499, data = AllometryGDF)
 summary(Allom_simple)
+
+#############Some test snippets for figuring out the new allometry plotting
+
+Allom_simple_log <-procD.lm(shape~log(size), iter = 499, data = AllometryGDF)
+summary(Allom_simple)
+summary(Allom_simple_log)
+
+labels=as.vector(dimnames(AllometryGDF$shape)[[3]])
+
+
+#THE SOLUTION - MAKE SURE YOU DO PLOTALLOMETRY WITH CSIZES AS USED IN THE ALLOMETRY MODEL!
+par(mfrow=c(1,2))
+
+plotAllometry(Allom_simple, size=AllometryGDF$size, method="RegScore", logsz = FALSE, pch=19, col= "pink")
+
+plot(Allom_simple, type = "regression", reg.type = "RegScore", predictor = AllometryGDF$size, pch = 19)
+
+
+plotAllometry(Allom_simple_log, size=AllometryGDF$size, method="RegScore", logsz = TRUE, pch=19, col= "pink")
+
+plot(Allom_simple_log, type = "regression", reg.type = "RegScore", predictor = log(AllometryGDF$size), pch = 19)
+
+
+#if logging, results are totally different
+plotAllometry(Allom_simple, size=AllometryGDF$size, method="RegScore", logsz = TRUE, pch=19)
+
+plot(Allom_simple, type = "regression", reg.type = "RegScore", predictor =log(AllometryGDF$size), pch = 19)
+
+
+
+
+
+
+```
+
+
+
+
+
+
+
+
+```{r}
+
+
+
+
+
+
 
 ## SEX
 #Allometry (linear model) with sex as an interaction 
