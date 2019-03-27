@@ -246,12 +246,18 @@ plot(Allom, method="RegScore" ); labels=dimnames(shape.size$shape)[[3]]
 #Allometry plot with sepcimen names
 plot(Allom, method="RegScore" ,label=dimnames(shape.size$shape)[[3]])
 
+plot(Allom, type = c(""regression"), outliers = FALSE, predictor = NULL, reg.type = c(  "RegScore")
+
+plotAllometry(Allom, method = "RegScore")
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   Error to fix - Plots above do not work anymore
 plot(x, type = c("diagnostics", "regression", "PC"),
   outliers = FALSE, predictor = NULL, reg.type = c("CRC", "PredLine",
   "RegScore"), ...)
+
+plotAllometry(fit, size, logsz = TRUE, method = c("PredLine",
+  "RegScore", "size.shape", "CAC"), ...)
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 ```
 
