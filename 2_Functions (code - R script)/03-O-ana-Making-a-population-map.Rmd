@@ -28,11 +28,30 @@ bp <- ggplot() + coord_fixed() +
 ```{r}
 australia_messy <- bp + geom_polygon(data=australia, aes(x=long, y=lat, group=group), 
                                      colour="black", fill="white")
-
 australia_messy
 ```
 
-##clean up the map
+
+
+##read GPS coordinates
+```{r}
+LatLontest <- read.csv("../1_Data (original data)/1_Raw/03_O_ana_-_All_Landmarked_Metadata.csv", header = T)
+LatLontest
+```
+
+#plot data points in map
+```{r}
+australiamap_data <- 
+ australia_messy +
+  geom_point(data=LatLontest, 
+             aes(x=Longitude, y=Latitude), colour="Black", 
+             fill="Black",pch=21, size=2, alpha=I(.8))
+
+australiamap_data
+```
+
+
+#If gridline removal is wanted
 ```{r}
 cleanup <- 
   theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), 
@@ -45,21 +64,3 @@ australia_clean <- australia_messy + cleanup
 
 australia_clean
 ```
-
-##read GPS coordinates
-```{r}
-LatLontest <- read.csv("../1_Data (original data)/1_Raw/03_O_ana_-_All_Landmarked_Metadata.csv", header = T)
-LatLontest
-```
-
-#plot data points in map
-```{r}
-australiamap_data <- 
- australia_clean +
-  geom_point(data=LatLontest, 
-             aes(x=Longitude, y=Latitude), colour="Black", 
-             fill="Black",pch=21, size=2, alpha=I(.8))
-
-australiamap_data
-```
-
