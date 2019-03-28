@@ -251,9 +251,6 @@ plot(Allom, type = c("regression"), outliers = FALSE, predictor = NULL, reg.type
 plotAllometry(Allom, method = "RegScore")
 
 
-
-
-
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   Error to fix - Plots above do not work anymore
 plot(x, type = c("diagnostics", "regression", "PC"),
@@ -283,6 +280,7 @@ rownames (meta.info)= meta.info$CatNum
 ```
 
 ##Is the allometry correlated with sex; latitude; population?
+##We will start with defining our data frame and looking at allometry plotted
 ```{r}
 #Define the data frame
 AllometryGDF <- geomorph.data.frame(shape=bY.shape, size=meta.info$Csize, sex= meta.info$Sex, Lat=meta.info$Latitude)
@@ -319,27 +317,10 @@ plotAllometry(Allom_simple, size=AllometryGDF$size, method="RegScore", logsz = T
 plot(Allom_simple, type = "regression", reg.type = "RegScore", predictor =log(AllometryGDF$size), pch = 19)
 
 
-
-
-
-
 ```
 
-
-
-
-
-
-
-
+##Is the allometry correlated with sex?
 ```{r}
-
-
-
-
-
-
-
 ## SEX
 #Allometry (linear model) with sex as an interaction 
 Allom_Sex <-procD.lm(shape~size*sex, iter = 499, data = AllometryGDF)
@@ -384,7 +365,11 @@ plot(meta.info$Csize~meta.info$Weight..g.,col=factor(meta.info$Sex))
 #Red: Male
 #Green: NA
 #Black: Female
+```
 
+
+##Is the allometry correlated with latitude?
+```{r}
 ## LATITUDE
 #Allometry with Latitude as an interaction
 Allom_Lat <-procD.lm(shape~size*Lat, iter = 499, data = AllometryGDF)
@@ -393,7 +378,10 @@ summary(Allom_Lat)
 
 #Latitude and Centroid size - not signifcant 
 summary(lm(meta.info$Csize~meta.info$Latitude))
+```
 
+##Is the allometry correlated with population?
+```{r}
 ## POPULATION
 #Allometry looking at Population difference
 Allom_Pop <-
