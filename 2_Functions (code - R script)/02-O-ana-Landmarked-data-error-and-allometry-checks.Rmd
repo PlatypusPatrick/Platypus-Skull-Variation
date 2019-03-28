@@ -370,7 +370,6 @@ plot(meta.info$Csize~meta.info$Weight..g.,col=factor(meta.info$Sex))
 
 ##Is the allometry correlated with latitude?
 ```{r}
-## LATITUDE
 #Allometry with Latitude as an interaction
 Allom_Lat <-procD.lm(shape~size*Lat, iter = 499, data = AllometryGDF)
 summary(Allom_Lat)
@@ -382,7 +381,6 @@ summary(lm(meta.info$Csize~meta.info$Latitude))
 
 ##Is the allometry correlated with population?
 ```{r}
-## POPULATION
 #Allometry looking at Population difference
 Allom_Pop <-
 Summary(Allom_Pop)
@@ -392,7 +390,7 @@ Summary(Allom_Pop)
 ```{r}
 #correlate csize with sex, population and latitude without shape
        #check out procD.pgls in the geomorph help files
-CS_Sex <- procD.pgls(Shape ~CS, iter = 499, data = AllometryGDF) #example code from Ariel's work
+CS_Sex <- procD.pgls(shape~size, iter = 499, data = AllometryGDF) #example code from Ariel's work
 Summary(CS_Sex)
 
 CS_Lat <- 
