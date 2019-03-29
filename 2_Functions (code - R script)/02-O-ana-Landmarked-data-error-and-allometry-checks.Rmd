@@ -5,7 +5,7 @@ date: "20-03-2019"
 output: html_document
 ---
 
-# Converting information from Viewbox into shape and metadata
+## Converting information from Viewbox into shape and metadata
 This code extracts two kinds of data from an excel sheet of coordinates exported from Viewbox, a 3D landmarking software (dHAL software, Kifissia, Greece; www.dhal.com; Polychronis et al. 2013). The first is the shape information from the 3D coordinates. The second is the metadata stored in the filename for each specimen.
 
 We found in Marcy et al. 2018, that using bilateral shape data improved the reliability of landmarking for small 3D-scanned skulls. Therefore we prepare the shape data to run _geomorph_'s `bilat.symmetry()` function.
@@ -21,8 +21,6 @@ library(data.table)
 library(geomorph)
 ```
 
-Viewbox puts the most recent specimen in the first row of the output .csv file, which is why we take the 10 initial specimens from the last rows of the coordinate dataset. 
-
 ## Prepare shape data for analyses in _geomorph_
 Viewbox exports the data as a 2D array with specimens as columns and X, Y, and Z coordinates as rows for landmark. For _geomorph_, we need to convert this into a 3D array where each specimen has its own 2D array of 3 columns for XYZ coordinates and a row for each landmark. In other words, a 3D array has dimensions (p x k x n), where p is the number of landmarks, k is the dimension (2 or 3), and n is the number of specimens.
 
@@ -37,14 +35,14 @@ data <- data.raw[, 2:(dim(data.raw)[2])]  # removes LM names for geomorph
 data <- t(data)
 A_ERR <- arrayspecs(data, 135, 3,sep = NULL)  # convert to 3D array w 405 pts & 3D coords
 
-plot3d(A_ERR[,,1], asp=FALSE)
+plot3d(A_ERR[,,1], asp=FALSE) #Check the landmarks have come through ok
 ```
 
 ## Extract metadata table from specimen filenames in shape array
 The coordinate data is just shape data unless we can extract any information the landmarker put in each specimen's filename. Starting here, we make a metadata table with specimens in the same order as their coordinates for future analyses. 
 
 ### Fix naming of replicate filenames (included to measure user error)
-Interspersed throughout the data collection process, PG landmarked 10 specimens twice. Their specimen names included "_ERR", however, not always in the same place in the filename. 
+Interspersed throughout the data collection process are ten landmarked specimens, that have been landmarked twice. Their specimen names included "_ERR", however, not always in the same place in the filename. 
 
 We correct the naming scheme to be machine-readable and in the process create a list of specimen names which were landmarked twice. 
 ```{r}
@@ -94,12 +92,11 @@ cols = c("Genus", "Species","Museum", "CatNum")
 sp.info <- WriteMetadata(A, cols)
 
 # Add special columns (requires 'Genus' 'Species' & 'CatNum')
-sp.info$Taxa <- paste(str_sub(sp.info$Genus, 1, 1), str_sub(sp.info$Species, 1, 3), sep = "_")  # turns Mus musculus into M_mus
+sp.info$Taxa <- paste(str_sub(sp.info$Genus, 1, 1), str_sub(sp.info$Species, 1, 3), sep = "_")  # turns Ornithorhynchus anatinus into O_ana
 sp.info$All <- with(sp.info, interaction(Genus, Species, Museum, CatNum, sep = "_"))  # required to run geomorph's bilat.symmetry()
 ```
 
-## Create shape matrices for each patch protocol
-Our methodology tested whether different patch protocols (big and small) impact later shape analyses. To save time, we digitized the patches at the same time so we have two different patch protocols to extract from the same shape coordinate file. 
+### Create shape matrices for each patch protocol
 ```{r}
 # Extract landmark point names
 pt.names <-as.vector(data.raw[, 1])  # gets 3D point names from Viewbox
@@ -108,17 +105,16 @@ no.XYZ.2 <- str_remove(pt.names, " [XYZ]")
 u.pt.names<- unique(no.XYZ)  # returns unique point and curve names
 ```
 
-## Run GPA and bilateral symmetry
+### Run GPA and bilateral symmetry
 Because we already slid our curve semi-landmarks and patch semi-landmarks in Viewbox, we pass their coordinates to _geomorph_ as if they are fixed landmarks. This avoids "over-sliding" the shape data. 
 ```{r}
 Y <- gpagen(A, Proj = TRUE, ProcD = TRUE)
-
 ```
 
 ### Add centroid size from gpagen() to metadata
 Simply join the centroid size given by `gpagen()` to the metadata table for each dataset. These data will be used later to quantify allometry.
 ```{r}
-#brief check that metadata and Csize match - this should return "TRUE" for all
+#Check that metadata and Csize match - this should return "TRUE" for all
 names(Y$Csize)==sp.info$All
 
 sp.info$Csize <- unname(Y$Csize)
@@ -128,11 +124,8 @@ sp.info$Csize <- unname(Y$Csize)
 To use _geomorph_'s `bilat.symmetry()` function, we needed to write a function, `FindPairs()` to find the bilateral landmark pairs. We assumed the user followed the following rules:
 
 1. For bilateral names, "R" and "L" designate sides at very end of the landmark's name.
-
 2. For curve points, "1", "2", "3", etc ascend in one direction, with bilateral curves sharing the same direction (e.g. numbers go up Anterior -> Posterior on both sides).
-
 3. For patches, bilateral points should have the same point number.
-
 ```{r}
 FindPairs <- function(pt.names){
        # Creates table of paired bilateral landmarks for bilat.symmetry().
@@ -184,13 +177,12 @@ names(Y$Csize)
 summary(biY)
 ```
 
-##############################################################################################
-# Calculate user error
+## Calculate user error
 Geometric morphometric studies usually require a lot of user-generated data and it's important to assess how much user error is created during the landmarking process. 
 
 Here we visualize whether any outliers can be explained by mistakes in landmark placement (e.g. a point "falling through" the nasal to land on the inner basicranium).
 
-## Check for outliers and fix landmarking errors
+### Check for outliers and fix landmarking errors
 _geomorph_ comes with a handy function to check for outliers. Since our sample has a wide range of species, we decided to include the groups factor. This means the plotOutliers returns likely outliers for each genus instead of the group as a whole. When groups were not defined, only large species were returned as "outliers". 
 ```{r}
 # Plot outliers by genus for small patch dataset
@@ -199,8 +191,6 @@ outliers <- plotOutliers(bY.shape, inspect.outliers = F)
 
 ### Visualize why they are outliers by looking at landmark vectors
 We can examine the landmark placements in outliers as compared to the specimen closest to the median, based on the plots above. This allows us to determine if there were any major landmarking errors that might impact further analyses.
-
-Genus abbreviatons and number of outliers were inserted where needed for each genus. This code was only used once: after all landmarks were captured and before the other major analyses were completed.
 
 Visualize outlier shape information. The block below returns the 3D shape of specimen of interest. We can use it to compare the outliers to the median specimen in its genus.
 ```{r}
@@ -214,12 +204,11 @@ par <- gridPar(pt.bg="pink", pt.size = 1)
 dimnames(bY.shape)  #to get specimen order
 plotRefToTarget(bY.shape[ , , meanspec], bY.shape[ , , 56], method = "vector", gridPars = par )
 plotRefToTarget(bY.shape[ , , meanspec], bY.shape[ , , 29], method = "vector", gridPars = par )
-
 ```
 
-#Align the specimen metadata with the coordinates for allometry analyses
+###Align the specimen metadata with the coordinates for allometry analyses
 ```{r}
-##Ensure that sp.infor and bY.shape have the specimens in the same order, which they do not by default because bilat.symm changes the order
+##Ensure that sp.infor and bY.shape have the specimens in the same order, which they do not by default because bilat.symm changes the order.
 #Secondly take out the "ind" that is left over from the bilat symm operation; this makes the dimnames comparable to sp.info$All
 dimnames(bY.shape)[[3]] <- sub(".*ind", "", dimnames(bY.shape)[[3]])
 
@@ -233,37 +222,7 @@ sp.infoOrdered <- sp.info[match(dimnames(bY.shape)[[3]],sp.info$All),]
 sp.infoOrdered$All==dimnames(bY.shape)[[3]]
 ```
 
-#Allometry analyses
-```{r}
-#Is there allometry in the whole sample?
-shape.size <- geomorph.data.frame(shape = bY.shape, size = sp.infoOrdered$Csize)
-dimnames(shape.size$shape)[[3]]
-Allom <-procD.lm(shape~size, iter = 499, data = shape.size)
-
-summary(Allom)
-
-plotAllometry(Allom, method="RegScore" ); labels=dimnames(shape.size$shape)[[3]] 
-
-#Allometry plot with sepcimen names
-plot(Allom, method="RegScore" ,label=dimnames(shape.size$shape)[[3]])
-
-plot(Allom, type = c("regression"), outliers = FALSE, predictor = NULL, reg.type = c("RegScore"))
-
-plotAllometry(Allom, method = "RegScore")
-
-
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-  Error to fix - Plots above do not work anymore
-plot(x, type = c("diagnostics", "regression", "PC"),
-  outliers = FALSE, predictor = NULL, reg.type = c("CRC", "PredLine",
-  "RegScore"), ...)
-
-plotAllometry(fit, size, logsz = TRUE, method = c("PredLine",
-  "RegScore", "size.shape", "CAC"), ...)
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-```
-
-## Attach metadata for further analysis. 
+### Attach metadata for further analysis. 
 ```{r}
 #Attach metadata 
 metadata <- read.csv("../1_Data (original data)/1_Raw/03_O_ana_-_All_Landmarked_Metadata.csv", header = T)
@@ -280,83 +239,47 @@ meta.info <- merge(sp.info, metadata, by = "CatNum", sort = F)
 rownames (meta.info)= meta.info$CatNum
 ```
 
-##Is the allometry correlated with sex; latitude; population?
-##We will start with defining our data frame and looking at allometry plotted
+### Allometry analyses
 ```{r}
 #Define the data frame
 AllometryGDF <- geomorph.data.frame(shape=bY.shape, size=meta.info$Csize, sex= meta.info$Sex, Lat=meta.info$Latitude)
 
-#Allometry (same as above but checking with added AllometryGDF - Gives the same results)
+#Test for allometry 
 Allom_simple <-procD.lm(shape~size, iter = 499, data = AllometryGDF)
 summary(Allom_simple)
 
-#############Some test snippets for figuring out the new allometry plotting
-
-Allom_simple_log <-procD.lm(shape~log(size), iter = 499, data = AllometryGDF)
-summary(Allom_simple)
-summary(Allom_simple_log)
-
-labels=as.vector(dimnames(AllometryGDF$shape)[[3]])
-
-
-#THE SOLUTION - MAKE SURE YOU DO PLOTALLOMETRY WITH CSIZES AS USED IN THE ALLOMETRY MODEL!
-par(mfrow=c(1,2))
-
-plotAllometry(Allom_simple, size=AllometryGDF$size, method="RegScore", logsz = FALSE, pch=19, col= "pink")
-
+#Plot
 plot(Allom_simple, type = "regression", reg.type = "RegScore", predictor = AllometryGDF$size, pch = 19)
-
-
-plotAllometry(Allom_simple_log, size=AllometryGDF$size, method="RegScore", logsz = TRUE, pch=19, col= "pink")
-
-plot(Allom_simple_log, type = "regression", reg.type = "RegScore", predictor = log(AllometryGDF$size), pch = 19)
-
-
-#if logging, results are totally different
-plotAllometry(Allom_simple, size=AllometryGDF$size, method="RegScore", logsz = TRUE, pch=19)
-
-plot(Allom_simple, type = "regression", reg.type = "RegScore", predictor =log(AllometryGDF$size), pch = 19)
-
 ```
 
-##Is the allometry correlated with sex?
-#There is a significant difference in allometric intercept but not slope (i.e. no interaction) between sexes; this means that male platypus......
-```{r}
-## SEX
-#Plot the allometry
-color.key <- c("Red","Blue", "Black")
-grp <- as.factor(meta.info$Sex)
-names(color.key) <- sort(unique(grp))
-grp.col <- color.key[match(grp, names(color.key))]
+## Is the allometry correlated with sex; latitude; population?
 
+### Is the allometry correlated with sex? (Part 1)
+```{r}
 #Allometry (linear model) with sex as an interaction 
 Allom_Sex <-procD.lm(shape~size*sex, iter = 499, data = AllometryGDF)
 summary(Allom_Sex)
-
-
-plotAllometry(Allom_Sex, size=AllometryGDF$size, method="RegScore", logsz = FALSE, pch=19)
-
-#Same thing but slightly different code
-plot(Allom_Sex, type = "regression", reg.type = "RegScore", predictor =AllometryGDF$size, pch = 19)
-plot(Allom_Sex, type = "regression", reg.type = "PredLine", predictor =AllometryGDF$size, pch = 19)
-
-
-
-
-
-
-plotAllometry(Allom_Sex, size=AllometryGDF$size, method="RegScore", logsz = FALSE, pch=19, col=grp.col )
-
-
-
-plot(log(meta.info$Csize), Allom_Sex$Reg.proj, xlab = "Centroid size", ylab= "Regression Score", cex=0.5, pch = 16, col= grp.col)
-
-plot(meta.info$Csize, Allom_Sex$pred.val, xlab = "Centroid size", ylab= "Regression Score", cex=0.5, pch = 16, col= grp.col)
 
 #Allometry (linear model) with no interaction 
 Allom_Sex.lm <-procD.lm(shape~size+sex, iter = 499, data = AllometryGDF)
 summary(Allom_Sex.lm) 
 
+#Make plot colour scheme
+color.key <- c("Red","Blue", "Black")
+grp <- as.factor(meta.info$Sex)
+names(color.key) <- sort(unique(grp))
+grp.col <- color.key[match(grp, names(color.key))]
+
+#Plot
+plot(Allom_Sex, type = "regression", reg.type = "RegScore", predictor =AllometryGDF$size, pch = 19, col= grp.col)
+plot(Allom_Sex, type = "regression", reg.type = "PredLine", predictor =AllometryGDF$size, pch = 19, col= grp.col)
+
+```
+
+## There is a significant difference in allometric intercept but not slope (i.e. no interaction) between sexes; this means that male platypus......
+
+### Is the allometry correlated with individual sex? (Part 2)
+```{r}
 #Allometry with individual Sex as an interaction - Males
 index.m <- which(meta.info$Sex == "Male")
 metadata.m <- meta.info[index.m, ]
@@ -375,30 +298,33 @@ AllometryGDF.f <- geomorph.data.frame(shape=shape.f, size=metadata.f$Csize, sex=
 Allom_Sex_F <-procD.lm(shape~size, iter = 499, data = AllometryGDF.f)
 summary(Allom_Sex_F) 
 
-#Weight and Centroid size - very signifcant 
+#Weight vs Centroid size - very signifcant 
 summary(lm(meta.info$Csize~meta.info$Weight..g.))
 
 plot(meta.info$Csize~meta.info$Weight..g.,col=factor(meta.info$Sex))
 #Red: Male
-#Green: NA
 #Black: Female
+#Green: NA
 ```
 
-
-##Is the allometry correlated with latitude?
+### Is the allometry correlated with latitude?
 ```{r}
 #Allometry (linear model) with interaction 
 Allom_Lat <-procD.lm(shape~size*Lat, iter = 499, data = AllometryGDF)
 summary(Allom_Lat)
-#significant p vaule though little residual significance
+
+Allom_Lat.lm <-procD.lm(shape~size+Lat, iter = 499, data = AllometryGDF)
+summary(Allom_Lat.lm)
+
+#Significant p-vaule though little residual significance
 
 #Latitude and Centroid size - not signifcant 
 summary(lm(meta.info$Csize~meta.info$Latitude))
 ```
 
-##Is the allometry correlated with population?
+### Is the allometry correlated with population? (Part 1)
 ```{r}
-#Allometry looking at Population difference
+#Define a new general data frame
 AllometryGDF.pop <- geomorph.data.frame(shape=bY.shape, size=meta.info$Csize, pop= meta.info$Population)
 
 #Allometry (linear model) with interaction 
@@ -408,36 +334,34 @@ summary(Allom_Pop.lm)
 #Allometry (linear model) with no interaction 
 Allom_Pop <-procD.lm(shape~size+pop, iter = 499, data = AllometryGDF.pop)
 summary(Allom_Pop)
+```
 
-
-
-#Allometry with individual populations as an interaction - Mainland
+### Is the allometry correlated with individual populations? (Part 2)
+```{r}
+#Allometry with individual populations - Mainland
 index.main <- which(meta.info$Population == "Mainland")
-names (index.main) <- meta.info$All[which(meta.info$Population == "Mainland")]
-
-
+names (index.main) <- meta.info$All[which(meta.info$Population == "Mainland")] 
 metadata.main <- meta.info[index.main, ]
 shape.main <- bY.shape[, , index.main]
 
-names(index.main)==dimnames(shape.main)[[3]]
-
+names(index.main)==dimnames(shape.main)[[3]]  #double check to match up
 
 AllometryGDF.main <- geomorph.data.frame(shape=shape.main, size=metadata.main$Csize, pop= metadata.main$Population)
 
 Allom_Pop_Main <-procD.lm(shape~size, iter = 499, data = AllometryGDF.main)
-summary(Allom_Pop_Main)
-```
+summary(Allom_Pop_Main)  
+#Significant and more resduals
 
-##Allometry with centroid size
-```{r}
-#correlate csize with sex, population and latitude without shape
-       #check out procD.pgls in the geomorph help files
-CS_Sex <- procD.pgls(shape~size, iter = 499, data = AllometryGDF) #example code from Ariel's work
-summary(CS_Sex)
+#Allometry with individual populations - Tasmanian
+index.tas <- which(meta.info$Population == "Tasmanian")
+names (index.tas) <- meta.info$All[which(meta.info$Population == "Tasmanian")] 
+metadata.tas <- meta.info[index.tas, ]
+shape.tas <- bY.shape[, , index.tas]
 
-CS_Lat <- 
-summary(CS_Lat)
+names(index.tas)==dimnames(shape.tas)[[3]]  #double check to match up
 
-CS_Pop <- 
-summary (CS_Pop)
+AllometryGDF.tas <- geomorph.data.frame(shape=shape.tas, size=metadata.tas$Csize, pop= metadata.tas$Population)
+
+Allom_Pop_Tas <-procD.lm(shape~size, iter = 499, data = AllometryGDF.tas)
+summary(Allom_Pop_Tas)  
 ```

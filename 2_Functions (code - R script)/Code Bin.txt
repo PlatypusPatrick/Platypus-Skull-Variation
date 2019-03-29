@@ -1,0 +1,72 @@
+Code bin
+
+------------------------------------------------------------------------
+#Is there allometry in the whole sample?
+shape.size <- geomorph.data.frame(shape = bY.shape, size = sp.infoOrdered$Csize)
+dimnames(shape.size$shape)[[3]]
+Allom <-procD.lm(shape~size, iter = 499, data = shape.size)
+
+summary(Allom)
+
+plotAllometry(Allom, method="RegScore" ); labels=dimnames(shape.size$shape)[[3]] 
+
+#Allometry plot with sepcimen names
+plot(Allom, method="RegScore" ,label=dimnames(shape.size$shape)[[3]])
+
+plot(Allom, type = c("regression"), outliers = FALSE, predictor = NULL, reg.type = c("RegScore"))
+
+plotAllometry(Allom, method = "RegScore")
+
+------------------------------------------------------------------------
+##Allometry with centroid size
+```{r}
+#correlate csize with sex, population and latitude without shape
+       #check out procD.pgls in the geomorph help files
+CS_Sex <- procD.pgls(shape~size, iter = 499, data = AllometryGDF) #example code from Ariel's work
+summary(CS_Sex)
+
+CS_Lat <- 
+summary(CS_Lat)
+
+CS_Pop <- 
+summary (CS_Pop)
+```
+--------------------------------------------------------------------------
+
+
+#THE SOLUTION - MAKE SURE YOU DO PLOTALLOMETRY WITH CSIZES AS USED IN THE ALLOMETRY MODEL!
+par(mfrow=c(1,2))
+
+plotAllometry(Allom_simple, size=AllometryGDF$size, method="RegScore", logsz = FALSE, pch=19, col= "pink")
+
+plot(Allom_simple, type = "regression", reg.type = "RegScore", predictor = AllometryGDF$size, pch = 19)
+
+
+plotAllometry(Allom_simple_log, size=AllometryGDF$size, method="RegScore", logsz = TRUE, pch=19, col= "pink")
+
+plot(Allom_simple_log, type = "regression", reg.type = "RegScore", predictor = log(AllometryGDF$size), pch = 19)
+
+
+#if logging, results are totally different
+plotAllometry(Allom_simple, size=AllometryGDF$size, method="RegScore", logsz = TRUE, pch=19)
+
+plot(Allom_simple, type = "regression", reg.type = "RegScore", predictor =log(AllometryGDF$size), pch = 19)
+
+-------------------------------------------------------------------------
+Two graphs at the same time:
+par(mfrow=c(1,2))
+
+-------------------------------------------------------------------------
+Various Sex allometry Plot code:
+plotAllometry(Allom_Sex, size=AllometryGDF$size, method="RegScore", logsz = FALSE, pch=19)
+
+plot(Allom_Sex, type = "regression", reg.type = "RegScore", predictor =AllometryGDF$size, pch = 19)
+plot(Allom_Sex, type = "regression", reg.type = "PredLine", predictor =AllometryGDF$size, pch = 19)
+
+plotAllometry(Allom_Sex, size=AllometryGDF$size, method="RegScore", logsz = FALSE, pch=19, col=grp.col )
+
+Doesn't work since no log
+
+plot(log(meta.info$Csize), Allom_Sex$Reg.proj, xlab = "Centroid size", ylab= "Regression Score", cex=0.5, pch = 16, col= grp.col)
+
+plot(meta.info$Csize, Allom_Sex$pred.val, xlab = "Centroid size", ylab= "Regression Score", cex=0.5, pch = 16, col= grp.col)
