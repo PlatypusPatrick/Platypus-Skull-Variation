@@ -210,9 +210,10 @@ summary(meanspec)
 
 par <- gridPar(pt.bg="pink", pt.size = 1)
 
-#make sure that you compare outliers against mean specimens and nothing else at all times
+#Comepare to mean specimen to outliers
+dimnames(bY.shape)  #to get specimen order
 plotRefToTarget(bY.shape[ , , meanspec], bY.shape[ , , 56], method = "vector", gridPars = par )
-plotRefToTarget(bY.shape[ , , outliers[2]], bY.shape[ , , outliers[29]], method = "vector")
+plotRefToTarget(bY.shape[ , , meanspec], bY.shape[ , , 29], method = "vector", gridPars = par )
 
 ```
 
@@ -316,7 +317,6 @@ plotAllometry(Allom_simple, size=AllometryGDF$size, method="RegScore", logsz = T
 
 plot(Allom_simple, type = "regression", reg.type = "RegScore", predictor =log(AllometryGDF$size), pch = 19)
 
-
 ```
 
 ##Is the allometry correlated with sex?
@@ -370,7 +370,7 @@ plot(meta.info$Csize~meta.info$Weight..g.,col=factor(meta.info$Sex))
 
 ##Is the allometry correlated with latitude?
 ```{r}
-#Allometry with Latitude as an interaction
+#Allometry (linear model) with interaction 
 Allom_Lat <-procD.lm(shape~size*Lat, iter = 499, data = AllometryGDF)
 summary(Allom_Lat)
 #significant p vaule though little residual significance
@@ -382,8 +382,24 @@ summary(lm(meta.info$Csize~meta.info$Latitude))
 ##Is the allometry correlated with population?
 ```{r}
 #Allometry looking at Population difference
-Allom_Pop <-
-Summary(Allom_Pop)
+AllometryGDF.pop <- geomorph.data.frame(shape=bY.shape, size=meta.info$Csize, pop= meta.info$Population)
+
+#Allometry (linear model) with no interaction 
+Allom_Pop <-procD.lm(shape~size+pop, iter = 499, data = AllometryGDF.pop)
+summary(Allom_Pop)
+
+#Allometry (linear model) with interaction 
+Allom_Pop.lm <-procD.lm(shape~size*pop, iter = 499, data = AllometryGDF.pop)
+summary(Allom_Pop.lm)
+
+#Allometry with individual populations as an interaction - Mainland
+index.main <- which(meta.info$Population == "Mainland")
+metadata.main <- meta.info[index.main, ]
+shape.main <- bY.shape[, , index.main]
+AllometryGDF.main <- geomorph.data.frame(shape=shape.main, size=metadata.main$Csize, pop= metadata.main$Population)
+
+Allom_Pop_Main <-procD.lm(shape~size*pop, iter = 499, data = AllometryGDF.main)
+summary(Allom_Pop_Main)
 ```
 
 ##Allometry with centroid size
@@ -391,11 +407,11 @@ Summary(Allom_Pop)
 #correlate csize with sex, population and latitude without shape
        #check out procD.pgls in the geomorph help files
 CS_Sex <- procD.pgls(shape~size, iter = 499, data = AllometryGDF) #example code from Ariel's work
-Summary(CS_Sex)
+summary(CS_Sex)
 
 CS_Lat <- 
-Summary(CS_Lat)
+summary(CS_Lat)
 
 CS_Pop <- 
-Summary (CS_Pop)
+summary (CS_Pop)
 ```
