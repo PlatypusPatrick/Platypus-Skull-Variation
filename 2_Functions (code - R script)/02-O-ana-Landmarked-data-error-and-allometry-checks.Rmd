@@ -242,7 +242,7 @@ Allom <-procD.lm(shape~size, iter = 499, data = shape.size)
 
 summary(Allom)
 
-plot(Allom, method="RegScore" ); labels=dimnames(shape.size$shape)[[3]] 
+plotAllometry(Allom, method="RegScore" ); labels=dimnames(shape.size$shape)[[3]] 
 
 #Allometry plot with sepcimen names
 plot(Allom, method="RegScore" ,label=dimnames(shape.size$shape)[[3]])
@@ -320,19 +320,36 @@ plot(Allom_simple, type = "regression", reg.type = "RegScore", predictor =log(Al
 ```
 
 ##Is the allometry correlated with sex?
+#There is a significant difference in allometric intercept but not slope (i.e. no interaction) between sexes; this means that male platypus......
 ```{r}
 ## SEX
-#Allometry (linear model) with sex as an interaction 
-Allom_Sex <-procD.lm(shape~size*sex, iter = 499, data = AllometryGDF)
-summary(Allom_Sex)
-
 #Plot the allometry
 color.key <- c("Red","Blue", "Black")
 grp <- as.factor(meta.info$Sex)
 names(color.key) <- sort(unique(grp))
 grp.col <- color.key[match(grp, names(color.key))]
 
-plot(meta.info$Csize, Allom_Sex$Reg.proj, xlab = "Centroid size", ylab= "Regression Score", cex=0.5, pch = 16, col= grp.col)
+#Allometry (linear model) with sex as an interaction 
+Allom_Sex <-procD.lm(shape~size*sex, iter = 499, data = AllometryGDF)
+summary(Allom_Sex)
+
+
+plotAllometry(Allom_Sex, size=AllometryGDF$size, method="RegScore", logsz = FALSE, pch=19)
+
+#Same thing but slightly different code
+plot(Allom_Sex, type = "regression", reg.type = "RegScore", predictor =AllometryGDF$size, pch = 19)
+plot(Allom_Sex, type = "regression", reg.type = "PredLine", predictor =AllometryGDF$size, pch = 19)
+
+
+
+
+
+
+plotAllometry(Allom_Sex, size=AllometryGDF$size, method="RegScore", logsz = FALSE, pch=19, col=grp.col )
+
+
+
+plot(log(meta.info$Csize), Allom_Sex$Reg.proj, xlab = "Centroid size", ylab= "Regression Score", cex=0.5, pch = 16, col= grp.col)
 
 plot(meta.info$Csize, Allom_Sex$pred.val, xlab = "Centroid size", ylab= "Regression Score", cex=0.5, pch = 16, col= grp.col)
 
@@ -384,21 +401,30 @@ summary(lm(meta.info$Csize~meta.info$Latitude))
 #Allometry looking at Population difference
 AllometryGDF.pop <- geomorph.data.frame(shape=bY.shape, size=meta.info$Csize, pop= meta.info$Population)
 
-#Allometry (linear model) with no interaction 
-Allom_Pop <-procD.lm(shape~size+pop, iter = 499, data = AllometryGDF.pop)
-summary(Allom_Pop)
-
 #Allometry (linear model) with interaction 
 Allom_Pop.lm <-procD.lm(shape~size*pop, iter = 499, data = AllometryGDF.pop)
 summary(Allom_Pop.lm)
 
+#Allometry (linear model) with no interaction 
+Allom_Pop <-procD.lm(shape~size+pop, iter = 499, data = AllometryGDF.pop)
+summary(Allom_Pop)
+
+
+
 #Allometry with individual populations as an interaction - Mainland
 index.main <- which(meta.info$Population == "Mainland")
+names (index.main) <- meta.info$All[which(meta.info$Population == "Mainland")]
+
+
 metadata.main <- meta.info[index.main, ]
 shape.main <- bY.shape[, , index.main]
+
+names(index.main)==dimnames(shape.main)[[3]]
+
+
 AllometryGDF.main <- geomorph.data.frame(shape=shape.main, size=metadata.main$Csize, pop= metadata.main$Population)
 
-Allom_Pop_Main <-procD.lm(shape~size*pop, iter = 499, data = AllometryGDF.main)
+Allom_Pop_Main <-procD.lm(shape~size, iter = 499, data = AllometryGDF.main)
 summary(Allom_Pop_Main)
 ```
 
