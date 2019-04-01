@@ -273,6 +273,7 @@ grp.col <- color.key[match(grp, names(color.key))]
 #Plot
 plot(Allom_Sex, type = "regression", reg.type = "RegScore", predictor =AllometryGDF$size, pch = 19, col= grp.col)
 plot(Allom_Sex, type = "regression", reg.type = "PredLine", predictor =AllometryGDF$size, pch = 19, col= grp.col)
+legend("topright")
 
 ```
 
@@ -340,6 +341,26 @@ summary(Allom_Pop)
 ```{r}
 #Allometry with individual populations - Mainland
 index.main <- which(meta.info$Population == "Mainland")
+
+#VW TRIAL for combining Tassie and
+index_MT <-c(which(meta.info$Population == "Mainland"), which (meta.info$Population =="Tasmanian"))
+names(index_MT) <- meta.info$All[index_MT]
+metadata_MT <- meta.info[index_MT, ]
+shape_MT <- bY.shape[, , index_MT]
+
+AllometryGDF_MT <- geomorph.data.frame(shape=shape_MT, size=metadata_MT$Csize, pop= metadata_MT$Population)
+
+#No significand interactions means that slopes are not different
+Allom_Pop_MT <-procD.lm(shape~size*pop, iter = 499, data = AllometryGDF_MT)
+summary(Allom_Pop_MT)
+
+Allom_Pop_MT_NoInter <-procD.lm(shape~size+pop, iter = 499, data = AllometryGDF_MT)
+summary(Allom_Pop_MT_NoInter)
+
+#NOW DO COLOUR CODING
+
+
+
 names (index.main) <- meta.info$All[which(meta.info$Population == "Mainland")] 
 metadata.main <- meta.info[index.main, ]
 shape.main <- bY.shape[, , index.main]
