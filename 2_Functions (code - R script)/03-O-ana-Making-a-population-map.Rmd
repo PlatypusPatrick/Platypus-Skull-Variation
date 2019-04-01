@@ -5,26 +5,26 @@ date: "27-03-2019"
 output: html_document
 ---
 
-## Load packages
+### Load packages
 ```{r message = FALSE}
 library(ggplot2)
 library(maps)
 ```
 
-##extract map of Australia (or any other country/region) border points
+### Extract map of Australia (or any other country/region) border points
 ```{r}
 world_map <- map_data("world")
 australia <- subset(world_map, world_map$region=="Australia")
 australia
 ```
 
-##create a base plot with ggplot2
+### Create a base plot with ggplot2
 ```{r}
 bp <- ggplot() + coord_fixed() +
   xlab("") + ylab("")
 ```
 
-##Add map to base plot
+### Add map to base plot
 ```{r}
 australia_messy <- bp + geom_polygon(data=australia, aes(x=long, y=lat, group=group), 
                                      colour="black", fill="white")
@@ -33,13 +33,13 @@ australia_messy
 
 
 
-##read GPS coordinates
+### Read GPS coordinates
 ```{r}
 LatLontest <- read.csv("../1_Data (original data)/1_Raw/03_O_ana_-_All_Landmarked_Metadata.csv", header = T)
 LatLontest
 ```
 
-#plot data points in map
+### Plot data points in map
 ```{r}
 australiamap_data <- 
  australia_messy +
@@ -51,7 +51,7 @@ australiamap_data
 ```
 
 
-#If gridline removal is wanted
+### If gridline removal is wanted
 ```{r}
 cleanup <- 
   theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), 
