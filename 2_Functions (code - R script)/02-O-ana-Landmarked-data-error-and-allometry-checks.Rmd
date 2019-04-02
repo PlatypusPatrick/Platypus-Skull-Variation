@@ -247,7 +247,7 @@ Allom_Simple <-procD.lm(shape~size, iter = 499, data = AllometryGDF)
 summary(Allom_Simple)
 
 #Plot
-plot(Allom_simple, type = "regression", reg.type = "RegScore", predictor = AllometryGDF$size, pch = 19)
+plot(Allom_Simple, type = "regression", reg.type = "RegScore", predictor = AllometryGDF$size, pch = 19)
 ```
 
 ## Is the allometry correlated with sex; latitude; population?
@@ -340,6 +340,21 @@ summary(Allom_Pop)
 #Allometry (linear model) with no interaction 
 Allom_Pop_NoInter <-procD.lm(shape~size+pop, iter = 499, data = AllometryGDF_Pop)
 summary(Allom_Pop_NoInter)
+
+#Plot
+plot(Allom_Pop_NoInter, type = "regression", reg.type = "PredLine", predictor =AllometryGDF_Pop$size, pch = 19)
+
+plot(Allom_Pop_NoInter, type = "regression", reg.type = "RegScore", predictor =AllometryGDF_Pop$size, pch = 19)
+
+#TEST #########################################################################
+
+#Allometry (linear model) with no interaction looking at shape vs pop
+Allom_PopShapeSize <-procD.lm(shape~pop+size, iter = 499, data = AllometryGDF_Pop)
+summary(Allom_PopShapeSize)
+
+#Allometry (linear model) looking at shape vs pop
+Allom_PopShape <-procD.lm(shape~pop, iter = 499, data = AllometryGDF_Pop)
+summary(Allom_PopShape)
 ```
 
 ### Is the allometry correlated with individual populations? (Part 2)
@@ -395,6 +410,8 @@ summary(Allom_Pop_MT_NoInter)
 
 #Plot
 plot(Allom_Pop_MT_NoInter, type = "regression", reg.type = "PredLine", predictor =AllometryGDF_MT$size, pch = 19)
+
+plot(Allom_Pop_MT_NoInter, type = "regression", reg.type = "RegScore", predictor =AllometryGDF_MT$size, pch = 19)
 ```
 
 ### Is the allometry correlated with individual populations? - Mainland vs West Victoria (Part 4)
