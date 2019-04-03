@@ -442,10 +442,11 @@ plot(Allom_Pop_MWV_NoInter, type = "regression", reg.type = "PredLine", predicto
 
 ### Test for Bergmann's Rule
 ```{r}
-#Linear Model
+#Linear Model - Does size change with Lat?
 LM_BR <- procD.lm(size~lat, iter = 499, data = AllometryGDF)
 summary(LM_BR)
 
+#Linear Model - Does shape change with Lat?
 LM_BR_1 <- procD.lm(shape~lat, iter = 499, data = AllometryGDF)
 summary(LM_BR_1)
 ```
