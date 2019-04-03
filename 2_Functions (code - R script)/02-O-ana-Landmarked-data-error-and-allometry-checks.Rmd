@@ -446,9 +446,6 @@ plot(Allom_Pop_MWV_NoInter, type = "regression", reg.type = "PredLine", predicto
 LM_BR <- procD.lm(size~lat, iter = 499, data = AllometryGDF)
 summary(LM_BR)
 
-LM_BR_1 <- procD.lm(lat~size, iter = 499, data = AllometryGDF)
+LM_BR_1 <- procD.lm(shape~lat, iter = 499, data = AllometryGDF)
 summary(LM_BR_1)
-
-LM_BR_2 <- procD.lm(shape~lat, iter = 499, data = AllometryGDF)
-summary(LM_BR_2)
 ```
