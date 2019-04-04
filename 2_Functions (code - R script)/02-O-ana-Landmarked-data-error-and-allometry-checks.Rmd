@@ -237,6 +237,13 @@ meta.info <- merge(sp.info, metadata, by = "CatNum", sort = F)
 rownames (meta.info)= meta.info$CatNum
 ```
 
+### Double cheacking Csize range to make their are no large outliers
+```{r}
+#Double check Csize range
+Csizeorder<-sort((meta.info$Csize), decreasing=TRUE)
+Csizeorder
+```
+
 ### Allometry analyses
 ```{r}
 #Define the data frame
