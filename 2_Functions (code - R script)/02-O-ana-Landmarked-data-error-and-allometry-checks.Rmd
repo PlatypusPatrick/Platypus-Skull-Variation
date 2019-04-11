@@ -456,4 +456,12 @@ summary(LM_BR)
 #Linear Model - Does shape change with Lat?
 LM_BR_1 <- procD.lm(shape~lat, iter = 499, data = AllometryGDF)
 summary(LM_BR_1)
+
+
+### !!!! This one is the correct test to see test Bergmann's Rule I belive !!!!
+#Linear Model - Does size change with Lat?  !!!!
+LM_BR_2 <- procD.lm(lat~size, iter = 499, data = AllometryGDF)
+summary(LM_BR_2)
+
+plot(LM_BR_2, type = "regression", reg.type = "PredLine", predictor =AllometryGDF$lat, pch = 19)
 ```
