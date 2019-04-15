@@ -466,53 +466,47 @@ summary(LM_BR_2)
 plot(LM_BR_2, type = "regression", reg.type = "PredLine", predictor =AllometryGDF$lat, pch = 19)
 ```
 
-
-# PlotByGroup
+### Plot PCA
 ```{r}
-PlotByGroup <- function(metadata, column, color.key){
-        # Matches colors or other plotting attributes to each specimen according to a grouping factor or a column number.
-        #
-        # Args:
-        #   metadata: metadata table, often created with WriteMetadata().
-        #   column: 1 string matching the column name with target groups.
-        #   color.key: a vector of attributes listed in the same order as the unique group descriptors given by levels(as.factor(metadata$column))
-        # 
-        # Returns:
-        #    A vector of colors the length of specimen number, with colors according to the group descriptor of each individual, ready for plot().
-        
-        if (is.numeric(column)) {
-                col.num <- column
-        } else {
-                col.names <- unlist(dimnames(metadata)[[2]])
-                col.num <- which(col.names == column)
-        }
-        
-        grp <- as.factor(metadata[, col.num])
-        names(color.key) <- sort(unique(grp))
-        grp.col <- color.key[match(grp, names(color.key))]
-        return(grp.col)
-}
+# Plot 3D shape into a PCA plot
+pca_general <- plotTangentSpace(bY.shape)
 ```
 
-### PCA plotting 
+### PCA plotting for sex
 ```{r}
-pca.general <- plotTangentSpace(bY.shape)
-
-#Make a colour key
-colour.key2 <- c("Red","Blue", "Black", "Green", "Purple")
+#Make a colour key for sex
+colour_pca_sex <- c("Black", "Red", "Purple")
 grp <- as.factor(meta.info$Sex)
-names(colour.key2) <- sort(unique(grp))
-grp.col_2 <- colour.key2[match(grp, names(colour.key2))]
+names(colour_pca_sex) <- sort(unique(grp))
+grp_col_pca_sex <- colour_pca_sex[match(grp, names(colour_pca_sex))]
 
-library(plotrix) #don't know if I need
+#Plot PCA of Sex
+plot(x = pca_general$pc.scores[, 1],
+                         y = pca_general$pc.scores[, 2], 
+                         xlab = "PC1", 
+                         ylab = "PC2",
+                         asp = TRUE,
+                         col = grp_col_pca_sex, 
+                         pch = 16 )
+legend("bottomright", levels(meta.info$Sex), col=colour_pca_sex, pch = 19)
+```
 
-pca_sex <- PlotByGroup(meta.info, "Sex", grp.col_2)
-summary(pca_sex) #?
-PCA_Sex <- plotTangentSpace(pca_sex) #?
-plot(pca_sex) #?
+### PCA plotting for population
+```{r}
+#Make a colour key for popluation
+colour_pca_pop <- c("Red", "Black", "Blue", "Green")
+grp <- as.factor(meta.info$Population)
+names(colour_pca_pop) <- sort(unique(grp))
+grp_col_pca_pop <- colour_pca_pop[match(grp, names(colour_pca_pop))]
 
-PCA_Lat <- PlotByGroup(meta.info, "Latitude", grp.col_2)
-PCA_Pop <- PlotByGroup(meta.info, "Population", grp.col_2)
-
+#Plot PCA of population
+plot(x = pca_general$pc.scores[, 1],
+                         y = pca_general$pc.scores[, 2], 
+                         xlab = "PC1", 
+                         ylab = "PC2",
+                         asp = TRUE,
+                         col = grp_col_pca_pop, 
+                         pch = 16 )
+legend("topleft", levels(meta.info$Population), col=colour_pca_pop, pch = 19)
 ```
 

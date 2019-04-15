@@ -70,3 +70,42 @@ Doesn't work since no log
 plot(log(meta.info$Csize), Allom_Sex$Reg.proj, xlab = "Centroid size", ylab= "Regression Score", cex=0.5, pch = 16, col= grp.col)
 
 plot(meta.info$Csize, Allom_Sex$pred.val, xlab = "Centroid size", ylab= "Regression Score", cex=0.5, pch = 16, col= grp.col)
+
+-------------------------------------------------------------------------
+Ariel' PlotByGroup code for allometry
+
+### PlotByGroup
+```{r}
+PlotByGroup <- function(metadata, column, color.key){
+        # Matches colors or other plotting attributes to each specimen according to a grouping factor or a column number.
+        #
+        # Args:
+        #   metadata: metadata table, often created with WriteMetadata().
+        #   column: 1 string matching the column name with target groups.
+        #   color.key: a vector of attributes listed in the same order as the unique group descriptors given by levels(as.factor(metadata$column))
+        # 
+        # Returns:
+        #    A vector of colors the length of specimen number, with colors according to the group descriptor of each individual, ready for plot().
+        
+        if (is.numeric(column)) {
+                col.num <- column
+        } else {
+                col.names <- unlist(dimnames(metadata)[[2]])
+                col.num <- which(col.names == column)
+        }
+        
+        grp <- as.factor(metadata[, col.num])
+        names(color.key) <- sort(unique(grp))
+        grp.col <- color.key[match(grp, names(color.key))]
+        return(grp.col)
+}
+```
+
+
+# Use 'PlotByGroup' function above to create an easy to plot function of sex
+PCA_Pop <- PlotByGroup(meta.info, "Sex", grp.col_2)
+
+# Use 'PlotByGroup' function above to create an easy to plot function of population
+PCA_Pop <- PlotByGroup(meta.info, "Population", grp.col_2)
+
+-------------------------------------------------------------------------
