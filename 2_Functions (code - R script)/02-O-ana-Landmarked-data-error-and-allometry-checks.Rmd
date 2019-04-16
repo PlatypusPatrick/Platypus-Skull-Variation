@@ -470,6 +470,11 @@ plot(LM_BR_2, type = "regression", reg.type = "PredLine", predictor =AllometryGD
 ```{r}
 # Plot 3D shape into a PCA plot
 pca_general <- plotTangentSpace(bY.shape)
+
+pca_general$pc.summary
+
+plotRefToTarget(pca_general$pc.shapes$PC1min,pca_general$pc.shapes$PC1max, method="vector")
+
 ```
 
 ### PCA plotting for sex
@@ -508,5 +513,15 @@ plot(x = pca_general$pc.scores[, 1],
                          col = grp_col_pca_pop, 
                          pch = 16 )
 legend("topleft", levels(meta.info$Population), col=colour_pca_pop, pch = 19)
+
+```
+
+
+```{r}
+
+plot(pca_general$pc.scores[,1]  ~meta.info$Csize)
+
+summary(lm(pca_general$pc.scores[,1]  ~meta.info$Csize))
+
 ```
 
