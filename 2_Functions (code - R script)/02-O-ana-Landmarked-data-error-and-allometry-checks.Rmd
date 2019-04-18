@@ -1,7 +1,7 @@
 ---
 title: "02-O-ana-Landmarked-data-error-and-allometry-checks"
 author: "Patrick Green & Areil Marcy"
-date: "01-04-2019"
+date: "18-04-2019"
 output: html_document
 ---
 
@@ -13,7 +13,7 @@ We found in Marcy et al. 2018, that using bilateral shape data improved the reli
 Almost all upcoming analyses are done in the geometric morphometric R package, _geomorph_(Adams 2016; Adams & Otarola-Castillo 2013).
 
 ### Load packages
-```{r message = FALSE}
+```{r}
 library(dplyr)
 library(stringr)
 library(stringi)
@@ -244,6 +244,15 @@ Csizeorder<-sort((meta.info$Csize), decreasing=TRUE)
 Csizeorder
 ```
 
+### Test for Bergmann's Rule
+```{r}
+#Linear Model - Does size change with Lat?
+LM_BR <- procD.lm(size~lat, iter = 499, data = AllometryGDF)
+summary(LM_BR)
+
+plot(LM_BR_2, type = "regression", reg.type = "PredLine", predictor =AllometryGDF$lat, pch = 19)
+```
+
 ### Allometry analyses
 ```{r}
 #Define the data frame
@@ -259,7 +268,7 @@ plot(Allom_Simple, type = "regression", reg.type = "RegScore", predictor = Allom
 
 ## Is the allometry correlated with sex; latitude; population?
 
-### Is the allometry correlated with sex? (Part 1)
+### Is the allometry seen in sex? (Part 1)
 ```{r}
 #Allometry (linear model) with sex as an interaction 
 Allom_Sex <-procD.lm(shape~size*sex, iter = 499, data = AllometryGDF)
@@ -292,7 +301,7 @@ legend("bottomright", levels(meta.info$Sex), col=grp.col, pch = 19)
 
 ## There is a significant difference in allometric intercept but not slope (i.e. no interaction) between sexes; this means that male platypus......
 
-### Is the allometry correlated with individual sex? (Part 2)
+### Is the allometry  seen in individual sex? (Part 2)
 ```{r}
 #Allometry with individual Sex as an interaction - Males
 index.m <- which(meta.info$Sex == "Male")
@@ -319,7 +328,7 @@ plot(meta.info$Csize~meta.info$Weight..g.,col=factor(meta.info$Sex))
 legend("bottomright", levels(meta.info$Sex), col=c("black", "red", "green"), pch = 1)
 ```
 
-### Is the allometry correlated with latitude?
+### Is the allometry seen in latitude?
 ```{r}
 #Allometry (linear model) with interaction 
 Allom_Lat <-procD.lm(shape~size*lat, iter = 499, data = AllometryGDF)
@@ -335,7 +344,7 @@ summary(lm(meta.info$Csize~meta.info$Latitude))
 #Not significant
 ```
 
-### Is the allometry correlated with population? (Part 1)
+### Is the allometry seen in populations? (Part 1)
 ```{r}
 #Define a new general data frame
 AllometryGDF_Pop <- geomorph.data.frame(shape=bY.shape, size=meta.info$Csize, pop= meta.info$Population)
@@ -353,7 +362,7 @@ plot(Allom_Pop_NoInter, type = "regression", reg.type = "PredLine", predictor =A
 
 plot(Allom_Pop_NoInter, type = "regression", reg.type = "RegScore", predictor =AllometryGDF_Pop$size, pch = 19)
 
-#TEST #########################################################################
+#Does Shape change with population
 
 #Allometry (linear model) with no interaction looking at shape vs pop
 Allom_PopShapeSize <-procD.lm(shape~pop+size, iter = 499, data = AllometryGDF_Pop)
@@ -364,7 +373,7 @@ Allom_PopShape <-procD.lm(shape~pop, iter = 499, data = AllometryGDF_Pop)
 summary(Allom_PopShape)
 ```
 
-### Is the allometry correlated with individual populations? (Part 2)
+### Is the allometry seen in individual populations? (Part 2)
 ```{r}
 #Allometry with individual populations - Mainland
 index.main <- which(meta.info$Population == "Mainland")
@@ -394,7 +403,7 @@ Allom_Pop_Tas <-procD.lm(shape~size, iter = 499, data = AllometryGDF_Tas)
 summary(Allom_Pop_Tas)  
 ```
 
-### Is the allometry correlated with individual populations? - Mainland vs Tasmania (Part 3)
+### Is the allometry seen in individual populations? - Mainland vs Tasmania (Part 3)
 ```{r}
 #Allometry looking at Mainland populations vs the Tasmanian population
 index_MT <-c(which(meta.info$Population == "Mainland"), which(meta.info$Population =="Tasmanian"))
@@ -421,7 +430,7 @@ plot(Allom_Pop_MT_NoInter, type = "regression", reg.type = "PredLine", predictor
 plot(Allom_Pop_MT_NoInter, type = "regression", reg.type = "RegScore", predictor =AllometryGDF_MT$size, pch = 19)
 ```
 
-### Is the allometry correlated with individual populations? - Mainland vs West Victoria (Part 4)
+### Is the allometry seen in individual populations? - Mainland vs West Victoria (Part 4)
 ```{r}
 #Allometry looking at Mainland populations vs the West Victoria population
 index_MWV <-c(which(meta.info$Population == "Mainland"), which(meta.info$Population =="West Victoria"))
@@ -447,34 +456,16 @@ plot(Allom_Pop_MWV_NoInter, type = "regression", reg.type = "PredLine", predicto
 #pretty much the exact same regression line - No difference
 ```
 
-### Test for Bergmann's Rule
-```{r}
-#Linear Model - Does size change with Lat?
-LM_BR <- procD.lm(size~lat, iter = 499, data = AllometryGDF)
-summary(LM_BR)
-
-#Linear Model - Does shape change with Lat?
-LM_BR_1 <- procD.lm(shape~lat, iter = 499, data = AllometryGDF)
-summary(LM_BR_1)
-
-
-### !!!! This one is the correct test to see test Bergmann's Rule I belive !!!!
-#Linear Model - Does size change with Lat?  !!!!
-LM_BR_2 <- procD.lm(lat~size, iter = 499, data = AllometryGDF)
-summary(LM_BR_2)
-
-plot(LM_BR_2, type = "regression", reg.type = "PredLine", predictor =AllometryGDF$lat, pch = 19)
-```
-
 ### Plot PCA
 ```{r}
 # Plot 3D shape into a PCA plot
 pca_general <- plotTangentSpace(bY.shape)
 
+#Summare of PCA
 pca_general$pc.summary
 
-plotRefToTarget(pca_general$pc.shapes$PC1min,pca_general$pc.shapes$PC1max, method="vector")
-
+#Look at difference
+plotRefToTarget(pca_general$pc.shapes$PC1min,pca_general$pc.shapes$PC1max, method="vector",pt.bg="pink")
 ```
 
 ### PCA plotting for sex
@@ -516,12 +507,11 @@ legend("topleft", levels(meta.info$Population), col=colour_pca_pop, pch = 19)
 
 ```
 
-
+### Centroid size and PC1
 ```{r}
-
+#Plot centroid size with PC1
 plot(pca_general$pc.scores[,1]  ~meta.info$Csize)
 
+#Summary
 summary(lm(pca_general$pc.scores[,1]  ~meta.info$Csize))
-
 ```
-
