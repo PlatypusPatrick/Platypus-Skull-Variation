@@ -284,14 +284,7 @@ grp <- as.factor(meta.info$Sex)
 names(color.key) <- sort(unique(grp))
 grp.col <- color.key[match(grp, names(color.key))]
 
-#Plot
-plot(Allom_Sex, type = "regression", reg.type = "RegScore", predictor =AllometryGDF$size, pch = 19, col= grp.col)
-legend("bottomright", levels(meta.info$Sex), col=grp.col, pch = 19)
-
-plot(Allom_Sex, type = "regression", reg.type = "PredLine", predictor =AllometryGDF$size, pch = 19, col= grp.col)
-legend("bottomright", levels(meta.info$Sex), col=grp.col, pch = 19)
-
-#Plot with no interactions
+#Plot 
 plot(Allom_Sex_NoInter, type = "regression", reg.type = "RegScore", predictor =AllometryGDF$size, pch = 19, col= grp.col)
 legend("bottomright", levels(meta.info$Sex), col=grp.col, pch = 19)
 
@@ -383,8 +376,8 @@ shape.main <- bY.shape[, , index.main]
 
 names(index.main)==dimnames(shape.main)[[3]]  #double check to match up
 
-AllometryGDF_Main <- geomorph.data.frame(shape=shape.main, size=metadata.main$Csize, pop= metadata.main$Population) #Define a new general data frame
-
+#Define a new general data frame
+AllometryGDF_Main <- geomorph.data.frame(shape=shape.main, size=metadata.main$Csize, pop= metadata.main$Population) 
 Allom_Pop_Main <-procD.lm(shape~size, iter = 499, data = AllometryGDF_Main)
 summary(Allom_Pop_Main)  
 #Significant and more resduals
@@ -397,7 +390,8 @@ shape.tas <- bY.shape[, , index.tas]
 
 names(index.tas)==dimnames(shape.tas)[[3]]  #double check to match up
 
-AllometryGDF_Tas <- geomorph.data.frame(shape=shape.tas, size=metadata.tas$Csize, pop= metadata.tas$Population) #Define a new general data frame
+#Define a new general data frame
+AllometryGDF_Tas <- geomorph.data.frame(shape=shape.tas, size=metadata.tas$Csize, pop= metadata.tas$Population) 
 
 Allom_Pop_Tas <-procD.lm(shape~size, iter = 499, data = AllometryGDF_Tas)
 summary(Allom_Pop_Tas)  
