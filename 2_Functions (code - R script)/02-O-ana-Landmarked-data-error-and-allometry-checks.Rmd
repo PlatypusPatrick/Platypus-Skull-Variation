@@ -498,7 +498,6 @@ plot(x = pca_general$pc.scores[, 1],
                          col = grp_col_pca_pop, 
                          pch = 16 )
 legend("topleft", levels(meta.info$Population), col=colour_pca_pop, pch = 19)
-
 ```
 
 ### Centroid size and PC1
