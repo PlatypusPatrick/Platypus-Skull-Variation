@@ -246,6 +246,9 @@ Csizeorder
 
 ### Test for Bergmann's Rule
 ```{r}
+#Define the data frame
+AllometryGDF <- geomorph.data.frame(shape=bY.shape, size=meta.info$Csize, sex= meta.info$Sex, lat=meta.info$Latitude)
+
 #Linear Model - Does size change with Lat?
 LM_BR <- procD.lm(size~lat, iter = 499, data = AllometryGDF)
 summary(LM_BR)
@@ -255,9 +258,6 @@ plot(LM_BR_2, type = "regression", reg.type = "PredLine", predictor =AllometryGD
 
 ### Allometry analyses
 ```{r}
-#Define the data frame
-AllometryGDF <- geomorph.data.frame(shape=bY.shape, size=meta.info$Csize, sex= meta.info$Sex, lat=meta.info$Latitude)
-
 #Test for allometry 
 Allom_Simple <-procD.lm(shape~size, iter = 499, data = AllometryGDF)
 summary(Allom_Simple)
