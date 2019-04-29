@@ -244,23 +244,36 @@ Csizeorder<-sort((meta.info$Csize), decreasing=TRUE)
 Csizeorder
 ```
 
-### Test for Bergmann's Rule
+# Setting the data frame for linear models
 ```{r}
 #Define the data frame
 AllometryGDF <- geomorph.data.frame(shape=bY.shape, size=meta.info$Csize, sex= meta.info$Sex, lat=meta.info$Latitude)
 
+
+```
+
+
+### Test for Bergmann's Rule and sexual dimorphims (i.e. is centroid size influenced by latitude or sex?)
+```{r}
 #Linear Model - Does size change with Lat?
 LM_BR <- procD.lm(size~lat, iter = 499, data = AllometryGDF)
 summary(LM_BR)
 
-plot(LM_BR_2, type = "regression", reg.type = "PredLine", predictor =AllometryGDF$lat, pch = 19)
+plot(LM_BR, type = "regression", reg.type = "PredLine", predictor =AllometryGDF$lat, pch = 19)
+
+#Linear Model - Does size change with Sex?
+LM_BR_Sex <- procD.lm(size~sex, iter = 499, data = AllometryGDF)
+summary(LM_BR_Sex) #Yes! And a huge difference, too - 36% of size explained by sex.
+
+plot(LM_BR, type = "regression", reg.type = "PredLine", predictor =AllometryGDF$sex, pch = 19)
+
 ```
 
-### Allometry analyses
+### Allometry analyses (Does shape change with size?)
 ```{r}
-#Test for allometry 
+#Does shape change with size?
 Allom_Simple <-procD.lm(shape~size, iter = 499, data = AllometryGDF)
-summary(Allom_Simple)
+summary(Allom_Simple) #Yes- nearly 19% of shape variation due to size
 
 #Plot
 plot(Allom_Simple, type = "regression", reg.type = "RegScore", predictor = AllometryGDF$size, pch = 19)
@@ -272,7 +285,7 @@ plot(Allom_Simple, type = "regression", reg.type = "RegScore", predictor = Allom
 ```{r}
 #Allometry (linear model) with sex as an interaction 
 Allom_Sex <-procD.lm(shape~size*sex, iter = 499, data = AllometryGDF)
-summary(Allom_Sex)
+summary(Allom_Sex) #No sig. interaction
 
 #Allometry (linear model) with no interaction 
 Allom_Sex_NoInter <-procD.lm(shape~size+sex, iter = 499, data = AllometryGDF)
@@ -306,7 +319,10 @@ Allom_Sex_M <-procD.lm(shape~size, iter = 499, data = AllometryGDF_Male)
 summary(Allom_Sex_M)
 
 #Allometry with individual Sex as an interaction - Females
-index.f <- which(meta.info$Sex == "Female")
+
+#THE BELOW IS A START FOR MAKING A GDF FRAME WITH JUST MALES AND FEMALES. MAKE THAT AND RE-RUN TEH SEXUAL DIMORPHISM ANALYSES. 
+index.f <- c(which(meta.info$Sex == "Female"), which(meta.info$Sex == "Male"))
+
 metadata.f <- meta.info[index.f, ]
 shape.f <- bY.shape[, , index.f]
 AllometryGDF_Female <- geomorph.data.frame(shape=shape.f, size=metadata.f$Csize, sex= metadata.f$Sex)
