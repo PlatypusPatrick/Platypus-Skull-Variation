@@ -36,3 +36,5 @@ vignettes/*.pdf
 rsconnect/
 2_Functions (code - R script)/.RDataTmp
 2_Functions (code - R script)/.RDataTmp1
+2_Functions (code - R script)/PC1heatmap_dor.png
+2_Functions (code - R script)/PC1heatmap_lat.png

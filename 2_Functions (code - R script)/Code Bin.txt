@@ -109,3 +109,15 @@ PCA_Pop <- PlotByGroup(meta.info, "Sex", grp.col_2)
 PCA_Pop <- PlotByGroup(meta.info, "Population", grp.col_2)
 
 -------------------------------------------------------------------------
+
+#Allometry with individual Sex as an interaction - Males
+index.m <- which(meta.info$Sex == "Male")
+metadata.m <- meta.info[index.m, ]
+shape.m <- bY.shape[, , index.m]
+AllometryGDF_Male <- geomorph.data.frame(shape=shape.m, size=metadata.m$Csize, sex= metadata.m$Sex)
+
+Allom_Sex_M <-procD.lm(shape~size, iter = 499, data = AllometryGDF_Male)
+summary(Allom_Sex_M)
+
+-------------------------------------------------------------------------
+

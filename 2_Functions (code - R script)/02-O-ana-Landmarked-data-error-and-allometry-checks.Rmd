@@ -244,14 +244,11 @@ Csizeorder<-sort((meta.info$Csize), decreasing=TRUE)
 Csizeorder
 ```
 
-# Setting the data frame for linear models
+### Setting the data frame for linear models
 ```{r}
 #Define the data frame
 AllometryGDF <- geomorph.data.frame(shape=bY.shape, size=meta.info$Csize, sex= meta.info$Sex, lat=meta.info$Latitude)
-
-
 ```
-
 
 ### Test for Bergmann's Rule and sexual dimorphims (i.e. is centroid size influenced by latitude or sex?)
 ```{r}
@@ -265,8 +262,19 @@ plot(LM_BR, type = "regression", reg.type = "PredLine", predictor =AllometryGDF$
 LM_BR_Sex <- procD.lm(size~sex, iter = 499, data = AllometryGDF)
 summary(LM_BR_Sex) #Yes! And a huge difference, too - 36% of size explained by sex.
 
-plot(LM_BR, type = "regression", reg.type = "PredLine", predictor =AllometryGDF$sex, pch = 19)
+#Take out the N/A's
 
+#Define a new general data frame
+toberemoved_MF <- which(meta.info$Sex=="N/A") 
+metadata_MF <- meta.info[-toberemoved_MF, ]
+shape_MF <- bY.shape[, , -toberemoved_MF]
+AllometryGDF_MF <- geomorph.data.frame(shape=shape_MF, size=metadata_MF$Csize, sex= metadata_MF$Sex)
+
+#Linear Model - Does size change with Sex (no NA's)?
+Allom_Sex_MF <-procD.lm(shape~size, iter = 499, data = AllometryGDF_MF)
+summary(Allom_Sex_MF) 
+
+plot(LM_BR, type = "regression", reg.type = "PredLine", predictor =AllometryGDF$sex, pch = 19)
 ```
 
 ### Allometry analyses (Does shape change with size?)
@@ -307,29 +315,8 @@ legend("bottomright", levels(meta.info$Sex), col=grp.col, pch = 19)
 
 ## There is a significant difference in allometric intercept but not slope (i.e. no interaction) between sexes; this means that male platypus......
 
-### Is the allometry  seen in individual sex? (Part 2)
+### Looking at Weight on Centroid Size
 ```{r}
-#Allometry with individual Sex as an interaction - Males
-index.m <- which(meta.info$Sex == "Male")
-metadata.m <- meta.info[index.m, ]
-shape.m <- bY.shape[, , index.m]
-AllometryGDF_Male <- geomorph.data.frame(shape=shape.m, size=metadata.m$Csize, sex= metadata.m$Sex)
-
-Allom_Sex_M <-procD.lm(shape~size, iter = 499, data = AllometryGDF_Male)
-summary(Allom_Sex_M)
-
-#Allometry with individual Sex as an interaction - Females
-
-#THE BELOW IS A START FOR MAKING A GDF FRAME WITH JUST MALES AND FEMALES. MAKE THAT AND RE-RUN TEH SEXUAL DIMORPHISM ANALYSES. 
-index.f <- c(which(meta.info$Sex == "Female"), which(meta.info$Sex == "Male"))
-
-metadata.f <- meta.info[index.f, ]
-shape.f <- bY.shape[, , index.f]
-AllometryGDF_Female <- geomorph.data.frame(shape=shape.f, size=metadata.f$Csize, sex= metadata.f$Sex)
-
-Allom_Sex_F <-procD.lm(shape~size, iter = 499, data = AllometryGDF_Female)
-summary(Allom_Sex_F) 
-
 #Weight vs Centroid size - very signifcant 
 summary(lm(meta.info$Csize~meta.info$Weight..g.))
 
