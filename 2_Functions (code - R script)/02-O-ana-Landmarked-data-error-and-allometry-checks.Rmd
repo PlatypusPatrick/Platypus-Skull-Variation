@@ -175,7 +175,7 @@ names(Y$Csize)
 summary(biY)
 ```
 
-## Calculate user error
+## Calculate 
 Geometric morphometric studies usually require a lot of user-generated data and it's important to assess how much user error is created during the landmarking process. 
 
 Here we visualize whether any outliers can be explained by mistakes in landmark placement (e.g. a point "falling through" the nasal to land on the inner basicranium).
@@ -258,11 +258,8 @@ summary(LM_BR)
 
 plot(LM_BR, type = "regression", reg.type = "PredLine", predictor =AllometryGDF$lat, pch = 19)
 
-#Linear Model - Does size change with Sex?
-LM_BR_Sex <- procD.lm(size~sex, iter = 499, data = AllometryGDF)
-summary(LM_BR_Sex) #Yes! And a huge difference, too - 36% of size explained by sex.
 
-#Take out the N/A's
+#Take out the N/A's to make sure only male/female specimens are included
 
 #Define a new general data frame
 toberemoved_MF <- which(meta.info$Sex=="N/A") 
@@ -270,8 +267,17 @@ metadata_MF <- meta.info[-toberemoved_MF, ]
 shape_MF <- bY.shape[, , -toberemoved_MF]
 AllometryGDF_MF <- geomorph.data.frame(shape=shape_MF, size=metadata_MF$Csize, sex= metadata_MF$Sex)
 
+
+#Linear Model - Does size change with Sex?
+LM_BR_Sex <- procD.lm(size~sex, iter = 499, data = AllometryGDF_MF)
+summary(LM_BR_Sex) #Yes! And a huge difference, too - 36% of size explained by sex.
+
 #Linear Model - Does size change with Sex (no NA's)?
-Allom_Sex_MF <-procD.lm(shape~size, iter = 499, data = AllometryGDF_MF)
+Allom_Sex_MF <-procD.lm(shape~size*sex, iter = 499, data = AllometryGDF_MF)
+summary(Allom_Sex_MF) 
+
+#Taking out the interaction
+Allom_Sex_MF <-procD.lm(shape~size+sex, iter = 499, data = AllometryGDF_MF)
 summary(Allom_Sex_MF) 
 
 plot(LM_BR, type = "regression", reg.type = "PredLine", predictor =AllometryGDF$sex, pch = 19)
