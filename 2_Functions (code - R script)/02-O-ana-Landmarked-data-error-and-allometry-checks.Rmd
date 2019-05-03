@@ -310,6 +310,29 @@ plot(Allom_Sex_NoInter, type = "regression", reg.type = "RegScore", predictor =A
 legend("bottomright", levels(meta.info$Sex), col=grp.col, pch = 19)
 ```
 
+### Looking at indidvidual sex
+```{r}
+#Linear moedl with individual sex as an interaction - Males
+index.m <- which(meta.info$Sex == "Male")
+metadata.m <- meta.info[index.m, ]
+shape.m <- bY.shape[, , index.m]
+AllometryGDF_Male <- geomorph.data.frame(shape=shape.m, size=metadata.m$Csize, sex= metadata.m$Sex)
+
+Allom_Sex_M <-procD.lm(shape~size, iter = 499, data = AllometryGDF_Male)
+summary(Allom_Sex_M)
+
+#Linear moedl with individual sex as an interaction - Females
+index.f <- which(meta.info$Sex == "Female")
+metadata.f <- meta.info[index.f, ]
+shape.f <- bY.shape[, , index.f]
+AllometryGDF_Female <- geomorph.data.frame(shape=shape.f, size=metadata.f$Csize, sex= metadata.f$Sex)
+
+Allom_Sex_F <-procD.lm(shape~size, iter = 499, data = AllometryGDF_Female)
+summary(Allom_Sex_M)
+
+```
+
+
 ### Looking at Weight on Centroid Size
 ```{r}
 #Weight vs Centroid size - very signifcant 
