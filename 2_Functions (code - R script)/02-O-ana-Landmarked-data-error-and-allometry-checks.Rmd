@@ -250,7 +250,7 @@ Csizeorder
 AllometryGDF <- geomorph.data.frame(shape=bY.shape, size=meta.info$Csize, sex= meta.info$Sex, lat=meta.info$Latitude)
 ```
 
-### Test for sexual dimorphism (i.e. is centroid size influenced by sex?)
+### Test for sexual dimorphism (i.e. is centroid size influenced by sex?) 
 ```{r}
 #Take out the N/A's to make sure only male/female specimens are included
 
@@ -309,8 +309,6 @@ grp.col <- color.key[match(grp, names(color.key))]
 plot(Allom_Sex_NoInter, type = "regression", reg.type = "RegScore", predictor =AllometryGDF$size, pch = 19, col= grp.col)
 legend("bottomright", levels(meta.info$Sex), col=grp.col, pch = 19)
 ```
-
-## There is a significant difference in allometric intercept but not slope (i.e. no interaction) between sexes.
 
 ### Looking at Weight on Centroid Size
 ```{r}
