@@ -250,15 +250,8 @@ Csizeorder
 AllometryGDF <- geomorph.data.frame(shape=bY.shape, size=meta.info$Csize, sex= meta.info$Sex, lat=meta.info$Latitude)
 ```
 
-### Test for Bergmann's Rule and sexual dimorphims (i.e. is centroid size influenced by latitude or sex?)
+### Test for sexual dimorphism (i.e. is centroid size influenced by sex?)
 ```{r}
-#Linear Model - Does size change with Lat?
-LM_BR <- procD.lm(size~lat, iter = 499, data = AllometryGDF)
-summary(LM_BR)
-
-plot(LM_BR, type = "regression", reg.type = "PredLine", predictor =AllometryGDF$lat, pch = 19)
-
-
 #Take out the N/A's to make sure only male/female specimens are included
 
 #Define a new general data frame
@@ -267,20 +260,19 @@ metadata_MF <- meta.info[-toberemoved_MF, ]
 shape_MF <- bY.shape[, , -toberemoved_MF]
 AllometryGDF_MF <- geomorph.data.frame(shape=shape_MF, size=metadata_MF$Csize, sex= metadata_MF$Sex)
 
-
 #Linear Model - Does size change with Sex?
-LM_BR_Sex <- procD.lm(size~sex, iter = 499, data = AllometryGDF_MF)
-summary(LM_BR_Sex) #Yes! And a huge difference, too - 36% of size explained by sex.
+LM_SD <- procD.lm(size~sex, iter = 499, data = AllometryGDF_MF)
+summary(LM_SD) #Yes! And a huge difference, too - 49% of size explained by sex.
 
-#Linear Model - Does size change with Sex (no NA's)?
-Allom_Sex_MF <-procD.lm(shape~size*sex, iter = 499, data = AllometryGDF_MF)
-summary(Allom_Sex_MF) 
+```
 
-#Taking out the interaction
-Allom_Sex_MF <-procD.lm(shape~size+sex, iter = 499, data = AllometryGDF_MF)
-summary(Allom_Sex_MF) 
+### Test for Bergmann's Rule and sexual dimorphims (i.e. is centroid size influenced by latitude?)
+```{r}
+#Linear Model - Does size change with Lat?
+LM_BR <- procD.lm(size~lat, iter = 499, data = AllometryGDF)
+summary(LM_BR)
 
-plot(LM_BR, type = "regression", reg.type = "PredLine", predictor =AllometryGDF$sex, pch = 19)
+plot(LM_BR, type = "regression", reg.type = "RegScore", predictor =AllometryGDF$lat, pch = 19)
 ```
 
 ### Allometry analyses (Does shape change with size?)
@@ -293,17 +285,19 @@ summary(Allom_Simple) #Yes- nearly 19% of shape variation due to size
 plot(Allom_Simple, type = "regression", reg.type = "RegScore", predictor = AllometryGDF$size, pch = 19)
 ```
 
-## Is the allometry correlated with sex; latitude; population?
+## Is there allometry correlated (shape as a function of size) with sex; latitude; population?
 
-### Is the allometry seen in sex? (Part 1)
+### Sex
 ```{r}
-#Allometry (linear model) with sex as an interaction 
-Allom_Sex <-procD.lm(shape~size*sex, iter = 499, data = AllometryGDF)
-summary(Allom_Sex) #No sig. interaction
+#Linear Model - Does shape change with size and sex (no NA's)?
+Allom_Sex_MF <-procD.lm(shape~size*sex, iter = 499, data = AllometryGDF_MF)
+summary(Allom_Sex_MF) 
 
-#Allometry (linear model) with no interaction 
-Allom_Sex_NoInter <-procD.lm(shape~size+sex, iter = 499, data = AllometryGDF)
-summary(Allom_Sex_NoInter) 
+#Taking out the interaction
+Allom_Sex_MF_NoInter <-procD.lm(shape~size+sex, iter = 499, data = AllometryGDF_MF)
+summary(Allom_Sex_MF_NoInter) 
+
+plot(LM_BR, type = "regression", reg.type = "PredLine", predictor = AllometryGDF_MF$sex, pch = 19)
 
 #Make plot colour scheme
 color.key <- c("Red","Blue", "Black")
@@ -314,12 +308,9 @@ grp.col <- color.key[match(grp, names(color.key))]
 #Plot 
 plot(Allom_Sex_NoInter, type = "regression", reg.type = "RegScore", predictor =AllometryGDF$size, pch = 19, col= grp.col)
 legend("bottomright", levels(meta.info$Sex), col=grp.col, pch = 19)
-
-plot(Allom_Sex_NoInter, type = "regression", reg.type = "PredLine", predictor =AllometryGDF$size, pch = 19, col= grp.col)
-legend("bottomright", levels(meta.info$Sex), col=grp.col, pch = 19)
 ```
 
-## There is a significant difference in allometric intercept but not slope (i.e. no interaction) between sexes; this means that male platypus......
+## There is a significant difference in allometric intercept but not slope (i.e. no interaction) between sexes.
 
 ### Looking at Weight on Centroid Size
 ```{r}
@@ -330,13 +321,13 @@ plot(meta.info$Csize~meta.info$Weight..g.,col=factor(meta.info$Sex))
 legend("bottomright", levels(meta.info$Sex), col=c("black", "red", "green"), pch = 1)
 ```
 
-### Is the allometry seen in latitude?
+### Latitude
 ```{r}
-#Allometry (linear model) with interaction 
+#Linear Model - Does shape change with size and latitude
 Allom_Lat <-procD.lm(shape~size*lat, iter = 499, data = AllometryGDF)
 summary(Allom_Lat)
 
-#Allometry (linear model) with no interaction 
+#No interaction 
 Allom_Lat_NoInter <-procD.lm(shape~size+lat, iter = 499, data = AllometryGDF)
 summary(Allom_Lat_NoInter)
 #Significant p-vaule though little residual significance
@@ -346,38 +337,26 @@ summary(lm(meta.info$Csize~meta.info$Latitude))
 #Not significant
 ```
 
-### Is the allometry seen in populations? (Part 1)
+### Sub-populations (Part 1)
 ```{r}
 #Define a new general data frame
 AllometryGDF_Pop <- geomorph.data.frame(shape=bY.shape, size=meta.info$Csize, pop= meta.info$Population)
 
-#Allometry (linear model) with interaction 
+#Linear Model - Does shape change with size and populations  
 Allom_Pop <-procD.lm(shape~size*pop, iter = 499, data = AllometryGDF_Pop)
 summary(Allom_Pop)
 
-#Allometry (linear model) with no interaction 
+#No interaction 
 Allom_Pop_NoInter <-procD.lm(shape~size+pop, iter = 499, data = AllometryGDF_Pop)
 summary(Allom_Pop_NoInter)
 
 #Plot
-plot(Allom_Pop_NoInter, type = "regression", reg.type = "PredLine", predictor =AllometryGDF_Pop$size, pch = 19)
-
 plot(Allom_Pop_NoInter, type = "regression", reg.type = "RegScore", predictor =AllometryGDF_Pop$size, pch = 19)
-
-#Does Shape change with population
-
-#Allometry (linear model) with no interaction looking at shape vs pop
-Allom_PopShapeSize <-procD.lm(shape~pop+size, iter = 499, data = AllometryGDF_Pop)
-summary(Allom_PopShapeSize)
-
-#Allometry (linear model) looking at shape vs pop
-Allom_PopShape <-procD.lm(shape~pop, iter = 499, data = AllometryGDF_Pop)
-summary(Allom_PopShape)
 ```
 
-### Is the allometry seen in individual populations? (Part 2)
+### Individual sub-populations (Part 2)
 ```{r}
-#Allometry with individual populations - Mainland
+#Define a new general data frame for Mainland population
 index.main <- which(meta.info$Population == "Mainland")
 names (index.main) <- meta.info$All[which(meta.info$Population == "Mainland")] 
 metadata.main <- meta.info[index.main, ]
@@ -385,13 +364,14 @@ shape.main <- bY.shape[, , index.main]
 
 names(index.main)==dimnames(shape.main)[[3]]  #double check to match up
 
-#Define a new general data frame
-AllometryGDF_Main <- geomorph.data.frame(shape=shape.main, size=metadata.main$Csize, pop= metadata.main$Population) 
+AllometryGDF_Main <- geomorph.data.frame(shape=shape.main, size=metadata.main$Csize, pop= metadata.main$Population)
+
+#Linear Model - Does shape change with size and within the mainland population 
 Allom_Pop_Main <-procD.lm(shape~size, iter = 499, data = AllometryGDF_Main)
 summary(Allom_Pop_Main)  
 #Significant and more resduals
 
-#Allometry with individual populations - Tasmanian
+#Define a new general data frame for Tasmanian population 
 index.tas <- which(meta.info$Population == "Tasmanian")
 names (index.tas) <- meta.info$All[which(meta.info$Population == "Tasmanian")] 
 metadata.tas <- meta.info[index.tas, ]
@@ -399,16 +379,16 @@ shape.tas <- bY.shape[, , index.tas]
 
 names(index.tas)==dimnames(shape.tas)[[3]]  #double check to match up
 
-#Define a new general data frame
 AllometryGDF_Tas <- geomorph.data.frame(shape=shape.tas, size=metadata.tas$Csize, pop= metadata.tas$Population) 
 
+#Linear Model - Does shape change with size and within the Tasmanian population 
 Allom_Pop_Tas <-procD.lm(shape~size, iter = 499, data = AllometryGDF_Tas)
 summary(Allom_Pop_Tas)  
 ```
 
-### Is the allometry seen in individual populations? - Mainland vs Tasmania (Part 3)
+### Individual sub-populations (Part 3) - Mainland vs Tasmania
 ```{r}
-#Allometry looking at Mainland populations vs the Tasmanian population
+#Define a new general data frame for Mainaland and Tasmanian population
 index_MT <-c(which(meta.info$Population == "Mainland"), which(meta.info$Population =="Tasmanian"))
 names(index_MT) <- meta.info$All[index_MT]
 metadata_MT <- meta.info[index_MT, ]
@@ -416,26 +396,24 @@ shape_MT <- bY.shape[, , index_MT]
 
 names(index_MT)==dimnames(shape_MT)[[3]]  #double check to match up
 
-AllometryGDF_MT <- geomorph.data.frame(shape=shape_MT, size=metadata_MT$Csize, pop= metadata_MT$Population) #Define a new general data frame
+AllometryGDF_MT <- geomorph.data.frame(shape=shape_MT, size=metadata_MT$Csize, pop= metadata_MT$Population) 
 
-#Allometry (linear model) with interaction 
+#Linear Model - Does shape change with size and Mainland populations vs the Tasmanian population
 Allom_Pop_MT <-procD.lm(shape~size*pop, iter = 499, data = AllometryGDF_MT)
 summary(Allom_Pop_MT)
 #No significant interaction means that slopes are not different
 
-#Allometry (linear model) with no interaction 
+#No interaction 
 Allom_Pop_MT_NoInter <-procD.lm(shape~size+pop, iter = 499, data = AllometryGDF_MT)
 summary(Allom_Pop_MT_NoInter)
 
 #Plot
-plot(Allom_Pop_MT_NoInter, type = "regression", reg.type = "PredLine", predictor =AllometryGDF_MT$size, pch = 19)
-
 plot(Allom_Pop_MT_NoInter, type = "regression", reg.type = "RegScore", predictor =AllometryGDF_MT$size, pch = 19)
 ```
 
-### Is the allometry seen in individual populations? - Mainland vs West Victoria (Part 4)
+### Individual sub-populations (Part 4) - Mainland vs West Victoria
 ```{r}
-#Allometry looking at Mainland populations vs the West Victoria population
+#Define a new general data frame for Mainaland and West Victoria population
 index_MWV <-c(which(meta.info$Population == "Mainland"), which(meta.info$Population =="West Victoria"))
 names(index_MWV) <- meta.info$All[index_MWV]
 metadata_MWV <- meta.info[index_MWV, ]
@@ -443,19 +421,19 @@ shape_MWV <- bY.shape[, , index_MWV]
 
 names(index_MWV)==dimnames(shape_MWV)[[3]]  #double check to match up
 
-AllometryGDF_MWV <- geomorph.data.frame(shape=shape_MWV, size=metadata_MWV$Csize, pop= metadata_MWV$Population) #Define a new general data frame
+AllometryGDF_MWV <- geomorph.data.frame(shape=shape_MWV, size=metadata_MWV$Csize, pop= metadata_MWV$Population) 
 
-#Allometry (linear model) with interaction 
+#Linear Model - Does shape change with size and Mainland populations vs the West Victoria population 
 Allom_Pop_MWV <-procD.lm(shape~size*pop, iter = 499, data = AllometryGDF_MWV)
 summary(Allom_Pop_MWV)
 #No significant interaction means that slopes are not different
 
-#Allometry (linear model) with no interaction 
+#No interaction 
 Allom_Pop_MWV_NoInter <-procD.lm(shape~size+pop, iter = 499, data = AllometryGDF_MWV)
 summary(Allom_Pop_MWV_NoInter)
 
 #Plot
-plot(Allom_Pop_MWV_NoInter, type = "regression", reg.type = "PredLine", predictor =AllometryGDF_MWV$size, pch = 19)
+plot(Allom_Pop_MT_NoInter, type = "regression", reg.type = "RegScore", predictor =AllometryGDF_MT$size, pch = 19)
 #pretty much the exact same regression line - No difference
 ```
 
