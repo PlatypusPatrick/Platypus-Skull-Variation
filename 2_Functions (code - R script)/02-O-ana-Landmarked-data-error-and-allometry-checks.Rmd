@@ -175,13 +175,10 @@ names(Y$Csize)
 summary(biY)
 ```
 
-## Calculate 
-Geometric morphometric studies usually require a lot of user-generated data and it's important to assess how much user error is created during the landmarking process. 
-
-Here we visualize whether any outliers can be explained by mistakes in landmark placement (e.g. a point "falling through" the nasal to land on the inner basicranium).
-
 ### Check for outliers and fix landmarking errors
 _geomorph_ comes with a handy function to check for outliers. Since our sample has a wide range of species, we decided to include the groups factor. This means the plotOutliers returns likely outliers for each genus instead of the group as a whole. When groups were not defined, only large species were returned as "outliers". 
+
+Here we visualize whether any outliers can be explained by mistakes in landmark placement (e.g. a point "falling through" the nasal to land on the inner basicranium).
 ```{r}
 # Plot outliers by genus for small patch dataset
 outliers <- plotOutliers(bY.shape, inspect.outliers = F)
@@ -264,6 +261,7 @@ AllometryGDF_MF <- geomorph.data.frame(shape=shape_MF, size=metadata_MF$Csize, s
 LM_SD <- procD.lm(size~sex, iter = 499, data = AllometryGDF_MF)
 summary(LM_SD) #Yes! And a huge difference, too - 49% of size explained by sex.
 
+plot(LM_SD, type = "regression", reg.type = "RegScore", predictor = AllometryGDF_MF$size, pch = 19)
 ```
 
 ### Test for Bergmann's Rule and sexual dimorphims (i.e. is centroid size influenced by latitude?)
@@ -338,8 +336,17 @@ summary(Allom_Sex_M)
 #Weight vs Centroid size - very signifcant 
 summary(lm(meta.info$Csize~meta.info$Weight..g.))
 
+#plot
 plot(meta.info$Csize~meta.info$Weight..g.,col=factor(meta.info$Sex))
 legend("bottomright", levels(meta.info$Sex), col=c("black", "red", "green"), pch = 1)
+
+#Take out NA's
+summary(lm(metadata_MF$Csize~metadata_MF$Weight..g.))
+
+#plot
+plot(metadata_MF$Csize~metadata_MF$Weight..g.,col=factor(metadata_MF$Sex))
+legend("bottomright", levels(metadata_MF$Sex), col=c("black", "red", "green"), pch = 1)
+
 ```
 
 ### Latitude
@@ -458,39 +465,48 @@ plot(Allom_Pop_MT_NoInter, type = "regression", reg.type = "RegScore", predictor
 #pretty much the exact same regression line - No difference
 ```
 
-### Plot PCA
-```{r}
-# Plot 3D shape into a PCA plot
-pca_general <- plotTangentSpace(bY.shape)
-
-#Summare of PCA
-pca_general$pc.summary
-
-#Look at difference
-plotRefToTarget(pca_general$pc.shapes$PC1min,pca_general$pc.shapes$PC1max, method="vector",pt.bg="pink")
-```
-
 ### PCA plotting for sex
 ```{r}
 #Make a colour key for sex
-colour_pca_sex <- c("Black", "Red", "Purple")
-grp <- as.factor(meta.info$Sex)
+colour_pca_sex <- c("Black", "Red")
+grp <- as.factor(metadata_MF$Sex)
 names(colour_pca_sex) <- sort(unique(grp))
 grp_col_pca_sex <- colour_pca_sex[match(grp, names(colour_pca_sex))]
 
+# Plot 3D shape into a PCA plot (excluding the NA's to sex)
+pca_general_MF <- plotTangentSpace(shape_MF)
+
+#Summary of PCA
+pca_general_MF$pc.summary
+
+#Look at difference
+plotRefToTarget(pca_general_MF$pc.shapes$PC1min,pca_general_MF$pc.shapes$PC1max, method="vector",pt.bg="pink")
+
 #Plot PCA of Sex
-plot(x = pca_general$pc.scores[, 1],
-                         y = pca_general$pc.scores[, 2], 
+plot(x = pca_general_MF$pc.scores[, 1],
+                         y = pca_general_MF$pc.scores[, 2], 
                          xlab = "PC1", 
                          ylab = "PC2",
                          asp = TRUE,
                          col = grp_col_pca_sex, 
                          pch = 16 )
-legend("bottomright", levels(meta.info$Sex), col=colour_pca_sex, pch = 19)
+legend("topleft", levels(metadata_MF$Sex), col=colour_pca_sex, pch = 19)
+
+#scree plot
+screeplot(pca_general_MF)
 ```
 
 ### PCA plotting for population
 ```{r}
+# Plot 3D shape into a PCA plot
+pca_general <- plotTangentSpace(bY.shape)
+
+#Summary of PCA
+pca_general$pc.summary
+
+#Look at difference
+plotRefToTarget(pca_general$pc.shapes$PC1min,pca_general$pc.shapes$PC1max, method="vector",pt.bg="pink")
+
 #Make a colour key for popluation
 colour_pca_pop <- c("Red", "Black", "Blue", "Green")
 grp <- as.factor(meta.info$Population)
@@ -504,7 +520,7 @@ plot(x = pca_general$pc.scores[, 1],
                          ylab = "PC2",
                          asp = TRUE,
                          col = grp_col_pca_pop, 
-                         pch = 16 )
+                         pch = 16, xpd = T)
 legend("topleft", levels(meta.info$Population), col=colour_pca_pop, pch = 19)
 ```
 
