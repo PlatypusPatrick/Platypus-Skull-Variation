@@ -359,10 +359,6 @@ summary(Allom_Lat)
 Allom_Lat_NoInter <-procD.lm(shape~size+lat, iter = 499, data = AllometryGDF)
 summary(Allom_Lat_NoInter)
 #Significant p-vaule though little residual significance
-
-#Latitude and Centroid size
-summary(lm(meta.info$Csize~meta.info$Latitude))
-#Not significant
 ```
 
 ### Sub-populations (Part 1)
