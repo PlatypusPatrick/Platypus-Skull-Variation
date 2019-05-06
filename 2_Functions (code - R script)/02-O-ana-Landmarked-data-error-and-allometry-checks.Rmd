@@ -276,29 +276,31 @@ plot(AllometryGDF$size~AllometryGDF$lat, pch = 19)
 ### Test for Population and size (i.e. is centroid size influenced by latitude?)
 ```{r}
 #Define a new general data frame
-AllometryGDF_Pop <- geomorph.data.frame(shape=bY.shape, size=meta.info$Csize, pop= meta.info$Population, sex=meta.info$Sex)
+
+toberemoved_MF <- which(meta.info$Sex=="N/A")
+toberemoved_NQ <-which(meta.info$Population=="Northeastern Queensland")
+metadata_MFP <- meta.info[-c(toberemoved_MF,toberemoved_NQ), ]
+shape_MFP <- bY.shape[, , -c(toberemoved_MF,toberemoved_NQ)]
+AllometryGDF_PopSex <- geomorph.data.frame(shape=shape_MFP, size=metadata_MFP$Csize, sex= metadata_MFP$Sex, pop=metadata_MFP$Population)
+
+
+#Size <- geomorph.data.frame(shape=bY.shape, size=meta.info$Csize, pop= meta.info$Population, sex=meta.info$Sex)
+
 
 #Linear Model - Does size change with populations  
-LM_POP <- lm(AllometryGDF_Pop$size~AllometryGDF_Pop$pop)
+LM_POP <- lm(AllometryGDF_PopSex$size~AllometryGDF_PopSex$pop)
 summary(LM_POP)
 
-plot(AllometryGDF_Pop$size~AllometryGDF_Pop$pop, pch = 19)
+plot(AllometryGDF_PopSex$size~AllometryGDF_PopSex$pop, pch = 19)
 
-#Trial (size)~pop+sex
-LM_POP2 <- lm(AllometryGDF_Pop$size~AllometryGDF_Pop$pop+AllometryGDF_Pop$sex)
-summary(LM_POP2)
+#Testing if the lack of differences between populations is due to the strong size dimorphism
+LM_POP2 <- lm(AllometryGDF_PopSex$size~AllometryGDF_PopSex$pop*AllometryGDF_PopSex$sex)
+summary(LM_POP2) #Very low significance interaction between male and Tassie, omitting due to very small effect size
 
-#trial
-LMD_POP <-procD.lm(size~pop, iter = 499, data = AllometryGDF_Pop)
-summary(Allom_Pop)
+#Dropping interaction - there is no significant difference is size betwen populations, even after acocunting for size
+LM_POP2 <- lm(AllometryGDF_PopSex$size~AllometryGDF_PopSex$sex+AllometryGDF_PopSex$pop)
+summary(LM_POP2) #
 
-#trial
-LMD_POP <-procD.lm(size~pop, iter = 499, data = AllometryGDF_Pop)
-summary(LMD_POP)
-
-#trial
-LMD_POP2 <-procD.lm(size~pop*sex, iter = 499, data = AllometryGDF_Pop)
-summary(LMD_POP2)
 
 ```
 
