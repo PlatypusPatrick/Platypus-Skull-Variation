@@ -258,19 +258,19 @@ shape_MF <- bY.shape[, , -toberemoved_MF]
 AllometryGDF_MF <- geomorph.data.frame(shape=shape_MF, size=metadata_MF$Csize, sex= metadata_MF$Sex)
 
 #Linear Model - Does size change with Sex?
-LM_SD <- procD.lm(size~sex, iter = 499, data = AllometryGDF_MF)
+LM_SD <- lm(AllometryGDF_MF$size~AllometryGDF_MF$sex)
 summary(LM_SD) #Yes! And a huge difference, too - 49% of size explained by sex.
 
-plot(LM_SD, type = "regression", reg.type = "RegScore", predictor = AllometryGDF_MF$size, pch = 19)
+plot(AllometryGDF_MF$size~AllometryGDF_MF$sex, pch = 19)
 ```
 
-### Test for Bergmann's Rule and sexual dimorphims (i.e. is centroid size influenced by latitude?)
+### Test for Bergmann's Rule and sexual dimorphism (i.e. is centroid size influenced by latitude?)
 ```{r}
 #Linear Model - Does size change with Lat?
-LM_BR <- procD.lm(size~lat, iter = 499, data = AllometryGDF)
+LM_BR <- lm(AllometryGDF$size~AllometryGDF$lat)
 summary(LM_BR)
 
-plot(LM_BR, type = "regression", reg.type = "RegScore", predictor =AllometryGDF$lat, pch = 19)
+plot(AllometryGDF$size~AllometryGDF$lat, pch = 19)
 ```
 
 ### Allometry analyses (Does shape change with size?)
