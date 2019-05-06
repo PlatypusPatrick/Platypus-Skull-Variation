@@ -264,13 +264,42 @@ summary(LM_SD) #Yes! And a huge difference, too - 49% of size explained by sex.
 plot(AllometryGDF_MF$size~AllometryGDF_MF$sex, pch = 19)
 ```
 
-### Test for Bergmann's Rule and sexual dimorphism (i.e. is centroid size influenced by latitude?)
+### Test for Bergmann's Rule (i.e. is centroid size influenced by latitude?)
 ```{r}
 #Linear Model - Does size change with Lat?
 LM_BR <- lm(AllometryGDF$size~AllometryGDF$lat)
 summary(LM_BR)
 
 plot(AllometryGDF$size~AllometryGDF$lat, pch = 19)
+```
+
+### Test for Population and size (i.e. is centroid size influenced by latitude?)
+```{r}
+#Define a new general data frame
+AllometryGDF_Pop <- geomorph.data.frame(shape=bY.shape, size=meta.info$Csize, pop= meta.info$Population, sex=meta.info$Sex)
+
+#Linear Model - Does size change with populations  
+LM_POP <- lm(AllometryGDF_Pop$size~AllometryGDF_Pop$pop)
+summary(LM_POP)
+
+plot(AllometryGDF_Pop$size~AllometryGDF_Pop$pop, pch = 19)
+
+#Trial (size)~pop+sex
+LM_POP2 <- lm(AllometryGDF_Pop$size~AllometryGDF_Pop$pop+AllometryGDF_Pop$sex)
+summary(LM_POP2)
+
+#trial
+LMD_POP <-procD.lm(size~pop, iter = 499, data = AllometryGDF_Pop)
+summary(Allom_Pop)
+
+#trial
+LMD_POP <-procD.lm(size~pop, iter = 499, data = AllometryGDF_Pop)
+summary(LMD_POP)
+
+#trial
+LMD_POP2 <-procD.lm(size~pop*sex, iter = 499, data = AllometryGDF_Pop)
+summary(LMD_POP2)
+
 ```
 
 ### Allometry analyses (Does shape change with size?)
@@ -361,7 +390,7 @@ summary(Allom_Lat_NoInter)
 #Significant p-vaule though little residual significance
 ```
 
-### Sub-populations (Part 1)
+### Populations (Part 1)
 ```{r}
 #Define a new general data frame
 AllometryGDF_Pop <- geomorph.data.frame(shape=bY.shape, size=meta.info$Csize, pop= meta.info$Population)
@@ -378,7 +407,7 @@ summary(Allom_Pop_NoInter)
 plot(Allom_Pop_NoInter, type = "regression", reg.type = "RegScore", predictor =AllometryGDF_Pop$size, pch = 19)
 ```
 
-### Individual sub-populations (Part 2)
+### Individual populations (Part 2)
 ```{r}
 #Define a new general data frame for Mainland population
 index.main <- which(meta.info$Population == "Mainland")
@@ -410,7 +439,7 @@ Allom_Pop_Tas <-procD.lm(shape~size, iter = 499, data = AllometryGDF_Tas)
 summary(Allom_Pop_Tas)  
 ```
 
-### Individual sub-populations (Part 3) - Mainland vs Tasmania
+### Individual populations (Part 3) - Mainland vs Tasmania
 ```{r}
 #Define a new general data frame for Mainaland and Tasmanian population
 index_MT <-c(which(meta.info$Population == "Mainland"), which(meta.info$Population =="Tasmanian"))
@@ -435,7 +464,7 @@ summary(Allom_Pop_MT_NoInter)
 plot(Allom_Pop_MT_NoInter, type = "regression", reg.type = "RegScore", predictor =AllometryGDF_MT$size, pch = 19)
 ```
 
-### Individual sub-populations (Part 4) - Mainland vs West Victoria
+### Individual populations (Part 4) - Mainland vs West Victoria
 ```{r}
 #Define a new general data frame for Mainaland and West Victoria population
 index_MWV <-c(which(meta.info$Population == "Mainland"), which(meta.info$Population =="West Victoria"))
