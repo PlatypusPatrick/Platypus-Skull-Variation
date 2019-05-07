@@ -303,7 +303,7 @@ plot(LM_GDF_PopSex$size~LM_GDF_PopSex$pop, pch = 19, xlab = "Population",
                          ylab = "Centroid Size",)
 
 #Testing if the lack of differences between populations is due to the strong size dimorphism
-LM_POP2 <- lm(LM_GDF_PopSex$size~LM_GDF_PopSex$pop*LM_GDF_PopSex$sex)
+LM_POP2 <- lm(LM_GDF_PopSex$size~LM_GDF_PopSex$sex*LM_GDF_PopSex$pop)
 summary(LM_POP2) #Very low significance interaction between male and Tassie, omitting due to very small effect size
 
 #Dropping interaction - there is no significant difference in size betwen populations, even after acocunting for size
@@ -326,11 +326,11 @@ plot(Allom_Simple, type = "regression", reg.type = "RegScore", predictor = Allom
 ### Sex (shape as a function of sex)
 ```{r}
 #Linear Model - Does shape change with sex (no NA's) and size?
-Allom_Sex_MF <-procD.lm(shape~sex*size, iter = 499, data = AllometryGDF_MF)
+Allom_Sex_MF <-procD.lm(shape~size*sex, iter = 499, data = AllometryGDF_MF)
 summary(Allom_Sex_MF) 
 
 #Taking out the interaction
-Allom_Sex_MF_NoInter <-procD.lm(shape~sex+size, iter = 499, data = AllometryGDF_MF)
+Allom_Sex_MF_NoInter <-procD.lm(shape~size+sex, iter = 499, data = AllometryGDF_MF)
 summary(Allom_Sex_MF_NoInter) 
 
 #Make plot colour scheme
@@ -339,9 +339,8 @@ grp <- as.factor(metadata_MF$sex)
 names(color.key) <- sort(unique(grp))
 grp.col <- color.key[match(grp, names(color.key))]
 
-#Plot - Not working at the moment
-plot(Allom_Sex_MF_NoInter, type = "regression", reg.type = "RegScore", predictor = AllometryGDF_MF$s, pch = 19, col= grp.col)
-legend("bottomright", levels(AllometryGDF_MF$Sex), col=grp.col, pch = 19)
+#Plot
+plot(Allom_Sex_MF_NoInter, type = "regression", reg.type = "RegScore", predictor = AllometryGDF_MF$size, pch = 19)
 ```
 
 ### Latitude (shape as a function of latitude)
@@ -357,12 +356,8 @@ summary(Allom_Lat)
 AllometryGDF_Pop <- geomorph.data.frame(shape=bY.shape, size=meta.info$Csize, pop= meta.info$Population)
 
 #Linear Model - Does shape change with size and populations  
-Allom_Pop <-procD.lm(shape~pop*size, iter = 499, data = AllometryGDF_Pop)
+Allom_Pop <-procD.lm(shape~pop, iter = 499, data = AllometryGDF_Pop)
 summary(Allom_Pop)
-
-#No interaction 
-Allom_Pop_NoInter <-procD.lm(shape~pop, iter = 499, data = AllometryGDF_Pop)
-summary(Allom_Pop_NoInter)
 ```
 
 ### Individual populations (shape as a function of Population) (Part 2) - Mainland vs Tasmania
@@ -378,13 +373,8 @@ names(index_MT)==dimnames(shape_MT)[[3]]  #double check to match up
 AllometryGDF_MT <- geomorph.data.frame(shape=shape_MT, size=metadata_MT$Csize, pop= metadata_MT$Population) 
 
 #Linear Model - Does shape change population (Mainland vs Tasmanian) with size
-Allom_Pop_MT <-procD.lm(shape~pop*size, iter = 499, data = AllometryGDF_MT)
+Allom_Pop_MT <-procD.lm(shape~pop, iter = 499, data = AllometryGDF_MT)
 summary(Allom_Pop_MT)
-#No significant interaction means that slopes are not different
-
-#No interaction 
-Allom_Pop_MT_NoInter <-procD.lm(shape~pop+size, iter = 499, data = AllometryGDF_MT)
-summary(Allom_Pop_MT_NoInter)
 ```
 
 ### Individual populations (shape as a function of Population) (Part 3) - Mainland vs West Victoria
@@ -400,13 +390,8 @@ names(index_MWV)==dimnames(shape_MWV)[[3]]  #double check to match up
 AllometryGDF_MWV <- geomorph.data.frame(shape=shape_MWV, size=metadata_MWV$Csize, pop= metadata_MWV$Population) 
 
 #Linear Model - Does shape change population (Mainland vs West Victoria) with size
-Allom_Pop_MWV <-procD.lm(shape~pop*size, iter = 499, data = AllometryGDF_MWV)
+Allom_Pop_MWV <-procD.lm(shape~pop, iter = 499, data = AllometryGDF_MWV)
 summary(Allom_Pop_MWV)
-#No significant interaction means that slopes are not different
-
-#No interaction 
-Allom_Pop_MWV_NoInter <-procD.lm(shape~pop+size, iter = 499, data = AllometryGDF_MWV)
-summary(Allom_Pop_MWV_NoInter)
 ```
 
 ### PCA plotting for sex
@@ -591,7 +576,6 @@ AllometryGDF_Female <- geomorph.data.frame(shape=shape.f, size=metadata.f$Csize,
 
 Allom_Sex_F <-procD.lm(shape~size, iter = 499, data = AllometryGDF_Female)
 summary(Allom_Sex_M)
-
 ```
 
 
