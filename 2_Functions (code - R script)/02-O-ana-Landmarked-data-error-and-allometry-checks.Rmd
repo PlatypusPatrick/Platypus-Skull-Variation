@@ -261,7 +261,19 @@ AllometryGDF_MF <- geomorph.data.frame(shape=shape_MF, size=metadata_MF$Csize, s
 LM_SD <- lm(AllometryGDF_MF$size~AllometryGDF_MF$sex)
 summary(LM_SD) #Yes! And a huge difference, too - 49% of size explained by sex.
 
-plot(AllometryGDF_MF$size~AllometryGDF_MF$sex, pch = 19)
+plot(AllometryGDF_MF$size~AllometryGDF_MF$sex, pch = 19, xlab = "Sex", 
+                         ylab = "Centroid Size",)
+
+#Weight vs Centroid size - very signifcant 
+summary(lm(meta.info$Csize~meta.info$Weight..g.))
+
+#Take out NA's - Still very signifcant
+summary(lm(metadata_MF$Csize~metadata_MF$Weight..g.))
+
+#plot
+plot(metadata_MF$Csize~metadata_MF$Weight..g.,col=factor(metadata_MF$Sex), xlab = "Weight (g)", 
+                         ylab = "Centroid Size")
+legend("bottomright", levels(metadata_MF$Sex), col=c("black", "red", "green"), pch = 1)
 ```
 
 ### Test for Bergmann's Rule (i.e. is centroid size influenced by latitude?)
@@ -270,7 +282,8 @@ plot(AllometryGDF_MF$size~AllometryGDF_MF$sex, pch = 19)
 LM_BR <- lm(AllometryGDF$size~AllometryGDF$lat)
 summary(LM_BR)
 
-plot(AllometryGDF$size~AllometryGDF$lat, pch = 19)
+plot(AllometryGDF$size~AllometryGDF$lat, pch = 19, xlab = "Latitude", 
+                         ylab = "Centroid Size",)
 ```
 
 ### Test for Population and size (i.e. is centroid size influenced by latitude?)
@@ -282,19 +295,20 @@ metadata_PopSex <- meta.info[-c(toberemoved_NA,toberemoved_NQ), ]
 shape_PopSex <- bY.shape[, , -c(toberemoved_NA,toberemoved_NQ)]
 LM_GDF_PopSex <- geomorph.data.frame(shape=shape_PopSex, size=metadata_PopSex$Csize, sex= metadata_PopSex$Sex, pop=metadata_PopSex$Population)
 
-#Linear Model - Does size change with populations  
+#Linear Model - Does size change with population  
 LM_POP <- lm(LM_GDF_PopSex$size~LM_GDF_PopSex$pop)
 summary(LM_POP)
 
-plot(LM_GDF_PopSex$size~LM_GDF_PopSex$pop, pch = 19)
+plot(LM_GDF_PopSex$size~LM_GDF_PopSex$pop, pch = 19, xlab = "Population", 
+                         ylab = "Centroid Size",)
 
 #Testing if the lack of differences between populations is due to the strong size dimorphism
 LM_POP2 <- lm(LM_GDF_PopSex$size~LM_GDF_PopSex$pop*LM_GDF_PopSex$sex)
 summary(LM_POP2) #Very low significance interaction between male and Tassie, omitting due to very small effect size
 
-#Dropping interaction - there is no significant difference is size betwen populations, even after acocunting for size
-LM_POP2 <- lm(LM_GDF_PopSex$size~LM_GDF_PopSex$sex+LM_GDF_PopSex$pop)
-summary(LM_POP2)
+#Dropping interaction - there is no significant difference in size betwen populations, even after acocunting for size
+LM_POP3 <- lm(LM_GDF_PopSex$size~LM_GDF_PopSex$sex+LM_GDF_PopSex$pop)
+summary(LM_POP3)
 ```
 
 ### Allometry analyses (Does shape change with size?)
@@ -307,7 +321,233 @@ summary(Allom_Simple) #Yes- nearly 19% of shape variation due to size
 plot(Allom_Simple, type = "regression", reg.type = "RegScore", predictor = AllometryGDF$size, pch = 19)
 ```
 
-## Is there allometry correlated (shape as a function of size) with sex; latitude; population?
+### Shape as a function sex/latitude/population, including size as required
+
+### Sex (shape as a function of sex)
+```{r}
+#Linear Model - Does shape change with sex (no NA's) and size?
+Allom_Sex_MF <-procD.lm(shape~sex*size, iter = 499, data = AllometryGDF_MF)
+summary(Allom_Sex_MF) 
+
+#Taking out the interaction
+Allom_Sex_MF_NoInter <-procD.lm(shape~sex+size, iter = 499, data = AllometryGDF_MF)
+summary(Allom_Sex_MF_NoInter) 
+
+#Make plot colour scheme
+color.key <- c("Red","Black")
+grp <- as.factor(metadata_MF$sex)
+names(color.key) <- sort(unique(grp))
+grp.col <- color.key[match(grp, names(color.key))]
+
+#Plot - Not working at the moment
+plot(Allom_Sex_MF_NoInter, type = "regression", reg.type = "RegScore", predictor = AllometryGDF_MF$s, pch = 19, col= grp.col)
+legend("bottomright", levels(AllometryGDF_MF$Sex), col=grp.col, pch = 19)
+```
+
+### Latitude (shape as a function of latitude)
+```{r}
+#Linear Model - Does shape change with size and latitude
+Allom_Lat <-procD.lm(shape~lat, iter = 499, data = AllometryGDF)
+summary(Allom_Lat)
+```
+
+### Populations (shape as a function of Population) (Part 1)
+```{r}
+#Define a new general data frame
+AllometryGDF_Pop <- geomorph.data.frame(shape=bY.shape, size=meta.info$Csize, pop= meta.info$Population)
+
+#Linear Model - Does shape change with size and populations  
+Allom_Pop <-procD.lm(shape~pop*size, iter = 499, data = AllometryGDF_Pop)
+summary(Allom_Pop)
+
+#No interaction 
+Allom_Pop_NoInter <-procD.lm(shape~pop, iter = 499, data = AllometryGDF_Pop)
+summary(Allom_Pop_NoInter)
+```
+
+### Individual populations (shape as a function of Population) (Part 2) - Mainland vs Tasmania
+```{r}
+#Define a new general data frame for Mainaland and Tasmanian population
+index_MT <-c(which(meta.info$Population == "Mainland"), which(meta.info$Population =="Tasmanian"))
+names(index_MT) <- meta.info$All[index_MT]
+metadata_MT <- meta.info[index_MT, ]
+shape_MT <- bY.shape[, , index_MT]
+
+names(index_MT)==dimnames(shape_MT)[[3]]  #double check to match up
+
+AllometryGDF_MT <- geomorph.data.frame(shape=shape_MT, size=metadata_MT$Csize, pop= metadata_MT$Population) 
+
+#Linear Model - Does shape change population (Mainland vs Tasmanian) with size
+Allom_Pop_MT <-procD.lm(shape~pop*size, iter = 499, data = AllometryGDF_MT)
+summary(Allom_Pop_MT)
+#No significant interaction means that slopes are not different
+
+#No interaction 
+Allom_Pop_MT_NoInter <-procD.lm(shape~pop+size, iter = 499, data = AllometryGDF_MT)
+summary(Allom_Pop_MT_NoInter)
+```
+
+### Individual populations (shape as a function of Population) (Part 3) - Mainland vs West Victoria
+```{r}
+#Define a new general data frame for Mainaland and West Victoria population
+index_MWV <-c(which(meta.info$Population == "Mainland"), which(meta.info$Population =="West Victoria"))
+names(index_MWV) <- meta.info$All[index_MWV]
+metadata_MWV <- meta.info[index_MWV, ]
+shape_MWV <- bY.shape[, , index_MWV]
+
+names(index_MWV)==dimnames(shape_MWV)[[3]]  #double check to match up
+
+AllometryGDF_MWV <- geomorph.data.frame(shape=shape_MWV, size=metadata_MWV$Csize, pop= metadata_MWV$Population) 
+
+#Linear Model - Does shape change population (Mainland vs West Victoria) with size
+Allom_Pop_MWV <-procD.lm(shape~pop*size, iter = 499, data = AllometryGDF_MWV)
+summary(Allom_Pop_MWV)
+#No significant interaction means that slopes are not different
+
+#No interaction 
+Allom_Pop_MWV_NoInter <-procD.lm(shape~pop+size, iter = 499, data = AllometryGDF_MWV)
+summary(Allom_Pop_MWV_NoInter)
+```
+
+### PCA plotting for sex
+```{r}
+#Make a colour key for sex
+colour_pca_sex <- c("Black", "Red")
+grp <- as.factor(metadata_MF$Sex)
+names(colour_pca_sex) <- sort(unique(grp))
+grp_col_pca_sex <- colour_pca_sex[match(grp, names(colour_pca_sex))]
+
+# Plot 3D shape into a PCA plot (excluding the NA's to sex)
+pca_general_MF <- plotTangentSpace(shape_MF)
+
+#Summary of PCA
+pca_general_MF$pc.summary
+
+#Look at difference
+plotRefToTarget(pca_general_MF$pc.shapes$PC1min,pca_general_MF$pc.shapes$PC1max, method="vector",pt.bg="pink")
+
+#Plot PCA of Sex
+plot(x = pca_general_MF$pc.scores[, 1],
+                         y = pca_general_MF$pc.scores[, 2], 
+                         xlab = "PC1", 
+                         ylab = "PC2",
+                         asp = TRUE,
+                         col = grp_col_pca_sex, 
+                         pch = 16 )
+legend("topleft", levels(metadata_MF$Sex), col=colour_pca_sex, pch = 19)
+
+#scree plot
+screeplot(pca_general_MF)
+```
+
+### PCA plotting for population
+```{r}
+# Plot 3D shape into a PCA plot
+pca_general <- plotTangentSpace(bY.shape)
+
+#Summary of PCA
+pca_general$pc.summary
+
+#Look at difference
+plotRefToTarget(pca_general$pc.shapes$PC1min,pca_general$pc.shapes$PC1max, method="vector",pt.bg="pink")
+
+#Make a colour key for popluation
+colour_pca_pop <- c("Red", "Black", "Blue", "Green")
+grp <- as.factor(meta.info$Population)
+names(colour_pca_pop) <- sort(unique(grp))
+grp_col_pca_pop <- colour_pca_pop[match(grp, names(colour_pca_pop))]
+
+#Plot PCA of population
+plot(x = pca_general$pc.scores[, 1],
+                         y = pca_general$pc.scores[, 2], 
+                         xlab = "PC1", 
+                         ylab = "PC2",
+                         asp = TRUE,
+                         col = grp_col_pca_pop, 
+                         pch = 16, xpd = T)
+legend("topleft", levels(meta.info$Population), col=colour_pca_pop, pch = 19)
+```
+
+### Centroid size and PC1
+```{r}
+#Plot centroid size with PC1
+plot(pca_general$pc.scores[,1]  ~meta.info$Csize)
+
+#Summary
+summary(lm(pca_general$pc.scores[,1]  ~meta.info$Csize))
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ### Sex
 ```{r}
@@ -483,72 +723,4 @@ summary(Allom_Pop_MWV_NoInter)
 #Plot
 plot(Allom_Pop_MT_NoInter, type = "regression", reg.type = "RegScore", predictor =AllometryGDF_MT$size, pch = 19)
 #pretty much the exact same regression line - No difference
-```
-
-### PCA plotting for sex
-```{r}
-#Make a colour key for sex
-colour_pca_sex <- c("Black", "Red")
-grp <- as.factor(metadata_MF$Sex)
-names(colour_pca_sex) <- sort(unique(grp))
-grp_col_pca_sex <- colour_pca_sex[match(grp, names(colour_pca_sex))]
-
-# Plot 3D shape into a PCA plot (excluding the NA's to sex)
-pca_general_MF <- plotTangentSpace(shape_MF)
-
-#Summary of PCA
-pca_general_MF$pc.summary
-
-#Look at difference
-plotRefToTarget(pca_general_MF$pc.shapes$PC1min,pca_general_MF$pc.shapes$PC1max, method="vector",pt.bg="pink")
-
-#Plot PCA of Sex
-plot(x = pca_general_MF$pc.scores[, 1],
-                         y = pca_general_MF$pc.scores[, 2], 
-                         xlab = "PC1", 
-                         ylab = "PC2",
-                         asp = TRUE,
-                         col = grp_col_pca_sex, 
-                         pch = 16 )
-legend("topleft", levels(metadata_MF$Sex), col=colour_pca_sex, pch = 19)
-
-#scree plot
-screeplot(pca_general_MF)
-```
-
-### PCA plotting for population
-```{r}
-# Plot 3D shape into a PCA plot
-pca_general <- plotTangentSpace(bY.shape)
-
-#Summary of PCA
-pca_general$pc.summary
-
-#Look at difference
-plotRefToTarget(pca_general$pc.shapes$PC1min,pca_general$pc.shapes$PC1max, method="vector",pt.bg="pink")
-
-#Make a colour key for popluation
-colour_pca_pop <- c("Red", "Black", "Blue", "Green")
-grp <- as.factor(meta.info$Population)
-names(colour_pca_pop) <- sort(unique(grp))
-grp_col_pca_pop <- colour_pca_pop[match(grp, names(colour_pca_pop))]
-
-#Plot PCA of population
-plot(x = pca_general$pc.scores[, 1],
-                         y = pca_general$pc.scores[, 2], 
-                         xlab = "PC1", 
-                         ylab = "PC2",
-                         asp = TRUE,
-                         col = grp_col_pca_pop, 
-                         pch = 16, xpd = T)
-legend("topleft", levels(meta.info$Population), col=colour_pca_pop, pch = 19)
-```
-
-### Centroid size and PC1
-```{r}
-#Plot centroid size with PC1
-plot(pca_general$pc.scores[,1]  ~meta.info$Csize)
-
-#Summary
-summary(lm(pca_general$pc.scores[,1]  ~meta.info$Csize))
 ```
