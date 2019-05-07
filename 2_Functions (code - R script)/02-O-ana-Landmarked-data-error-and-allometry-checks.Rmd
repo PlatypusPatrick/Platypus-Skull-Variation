@@ -276,32 +276,25 @@ plot(AllometryGDF$size~AllometryGDF$lat, pch = 19)
 ### Test for Population and size (i.e. is centroid size influenced by latitude?)
 ```{r}
 #Define a new general data frame
-
-toberemoved_MF <- which(meta.info$Sex=="N/A")
+toberemoved_NA <- which(meta.info$Sex=="N/A")
 toberemoved_NQ <-which(meta.info$Population=="Northeastern Queensland")
-metadata_MFP <- meta.info[-c(toberemoved_MF,toberemoved_NQ), ]
-shape_MFP <- bY.shape[, , -c(toberemoved_MF,toberemoved_NQ)]
-AllometryGDF_PopSex <- geomorph.data.frame(shape=shape_MFP, size=metadata_MFP$Csize, sex= metadata_MFP$Sex, pop=metadata_MFP$Population)
-
-
-#Size <- geomorph.data.frame(shape=bY.shape, size=meta.info$Csize, pop= meta.info$Population, sex=meta.info$Sex)
-
+metadata_PopSex <- meta.info[-c(toberemoved_NA,toberemoved_NQ), ]
+shape_PopSex <- bY.shape[, , -c(toberemoved_NA,toberemoved_NQ)]
+LM_GDF_PopSex <- geomorph.data.frame(shape=shape_PopSex, size=metadata_PopSex$Csize, sex= metadata_PopSex$Sex, pop=metadata_PopSex$Population)
 
 #Linear Model - Does size change with populations  
-LM_POP <- lm(AllometryGDF_PopSex$size~AllometryGDF_PopSex$pop)
+LM_POP <- lm(LM_GDF_PopSex$size~LM_GDF_PopSex$pop)
 summary(LM_POP)
 
-plot(AllometryGDF_PopSex$size~AllometryGDF_PopSex$pop, pch = 19)
+plot(LM_GDF_PopSex$size~LM_GDF_PopSex$pop, pch = 19)
 
 #Testing if the lack of differences between populations is due to the strong size dimorphism
-LM_POP2 <- lm(AllometryGDF_PopSex$size~AllometryGDF_PopSex$pop*AllometryGDF_PopSex$sex)
+LM_POP2 <- lm(LM_GDF_PopSex$size~LM_GDF_PopSex$pop*LM_GDF_PopSex$sex)
 summary(LM_POP2) #Very low significance interaction between male and Tassie, omitting due to very small effect size
 
 #Dropping interaction - there is no significant difference is size betwen populations, even after acocunting for size
-LM_POP2 <- lm(AllometryGDF_PopSex$size~AllometryGDF_PopSex$sex+AllometryGDF_PopSex$pop)
-summary(LM_POP2) #
-
-
+LM_POP2 <- lm(LM_GDF_PopSex$size~LM_GDF_PopSex$sex+LM_GDF_PopSex$pop)
+summary(LM_POP2)
 ```
 
 ### Allometry analyses (Does shape change with size?)
