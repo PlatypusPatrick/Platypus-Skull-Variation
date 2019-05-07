@@ -355,9 +355,19 @@ summary(Allom_Lat)
 #Define a new general data frame
 AllometryGDF_Pop <- geomorph.data.frame(shape=bY.shape, size=meta.info$Csize, pop= meta.info$Population)
 
+toberemoved_NQ <-which(meta.info$Population=="Northeastern Queensland")
+metadata_PopSex <- meta.info[-toberemoved_NQ, ]
+shape_PopSex <- bY.shape[, , -toberemoved_NQ]
+GDF_PopSex <- geomorph.data.frame(shape=shape_PopSex, size=metadata_PopSex$Csize, pop=metadata_PopSex$Population)
+
+GDF_PopSex$pop <- droplevels(GDF_PopSex$pop, exclude = if(anyNA(levels(GDF_PopSex$pop))) NULL else NA)
+
 #Linear Model - Does shape change with size and populations  
-Allom_Pop <-procD.lm(shape~pop, iter = 499, data = AllometryGDF_Pop)
-summary(Allom_Pop)
+ProcLm_pop <-procD.lm(shape~pop, iter = 499, data = GDF_PopSex)# There is a significant difference in shape betwen populations
+summary(ProcLm_pop)
+
+summary(pairwise(ProcLm_pop, groups=GDF_PopSex$pop))
+
 ```
 
 ### Individual populations (shape as a function of Population) (Part 2) - Mainland vs Tasmania
@@ -375,6 +385,10 @@ AllometryGDF_MT <- geomorph.data.frame(shape=shape_MT, size=metadata_MT$Csize, p
 #Linear Model - Does shape change population (Mainland vs Tasmanian) with size
 Allom_Pop_MT <-procD.lm(shape~pop, iter = 499, data = AllometryGDF_MT)
 summary(Allom_Pop_MT)
+
+
+
+
 ```
 
 ### Individual populations (shape as a function of Population) (Part 3) - Mainland vs West Victoria
