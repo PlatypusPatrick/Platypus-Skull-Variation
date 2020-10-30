@@ -28,7 +28,7 @@ We also need to extract the metadata contained in the specimen filenames (export
 
 ### Convert to 3D array
 Here, we convert the coordinates into a 3D array for _geomorph_. Importantly, we need to remove the 1st column of landmark names. Following this is a 3D check of the landmarked positions. 
-```{r}
+```{r,}
 data.raw <- read.csv("../1_Data (original data)/1_Raw/02_O_ana_-_Landmark_Data.csv", header = T)
 
 data <- data.raw[, 2:(dim(data.raw)[2])]  # removes LM names for geomorph
@@ -270,7 +270,7 @@ AllometryGDF_MF <- geomorph.data.frame(shape=shape_MF, size=metadata_MF$Csize, s
 LM_SD <- lm(AllometryGDF_MF$size~AllometryGDF_MF$sex)
 summary(LM_SD) #Yes! And a huge difference, too - 49% of size explained by sex.
 
-plot(AllometryGDF_MF$size~AllometryGDF_MF$sex, pch = 19, xlab = "Sex", 
+plot(AllometryGDF_MF$size~ as.factor(AllometryGDF_MF$sex), pch = 19, xlab = "Sex", 
                          ylab = "Centroid Size",)
 
 #Weight vs Centroid size - very signifcant 
@@ -280,9 +280,9 @@ summary(lm(meta.info$Csize~meta.info$Weight..g.))
 summary(lm(metadata_MF$Csize~metadata_MF$Weight..g.))
 
 #plot
-plot(metadata_MF$Csize~metadata_MF$Weight..g.,col=factor(metadata_MF$Sex), xlab = "Weight (g)", 
+plot(metadata_MF$Csize~metadata_MF$Weight..g.,col=as.factor(metadata_MF$Sex), xlab = "Weight (g)", 
                          ylab = "Centroid Size")
-legend("bottomright", levels(metadata_MF$Sex), col=c("black", "red", "green"), pch = 1)
+legend("bottomright", levels(as.factor(metadata_MF$Sex)), col=c("black", "red", "green"), pch = 1)
 ```
 
 ### Test for Bergmann's Rule (i.e. is centroid size influenced by latitude?)
@@ -292,7 +292,7 @@ LM_BR <- lm(AllometryGDF$size~AllometryGDF$lat)
 summary(LM_BR)
 
 plot(AllometryGDF$size~AllometryGDF$lat, pch = 19, xlab = "Latitude", 
-                         ylab = "Centroid Size",)
+                         ylab = "Centroid Size", col=as.factor(metadata_MF$Sex))
 ```
 
 ### Test for Population and size (i.e. is centroid size influenced by latitude?)
@@ -327,8 +327,23 @@ Allom_Simple <-procD.lm(shape~size, iter = 499, data = AllometryGDF)
 summary(Allom_Simple) #Yes- nearly 19% of shape variation due to size
 
 #Plot
-plot(Allom_Simple, type = "regression", reg.type = "RegScore", predictor = AllometryGDF$size, pch = 19)
+plot(Allom_Simple, type = "regression", reg.type = "RegScore", predictor = AllometryGDF$size, pch = 19, col=as.factor(metadata_MF$Sex))
 ```
+
+
+```{r, cache=FALSE}
+
+meanspec <- findMeanSpec(AllometryGDF$shape)
+
+Mean_spec <- read.ply("../1_Data (original data)/1_Raw/O_ana_QVM_M1986x1x47.ply")
+Mean_spec$material$color <- Mean_spec$it
+Mean_spec$material$color <- "purple"
+
+shade3d(Mean_spec)
+
+```
+
+
 
 ### Shape as a function sex/latitude/population, including size as required
 

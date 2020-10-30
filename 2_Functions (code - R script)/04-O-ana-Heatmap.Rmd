@@ -9,19 +9,19 @@ output: html_document
 To make the landmark variation heatmaps, we use Dr Thomas Guillerme's package `landvR` to see how specific landmarks vary along PC1. 
 
 ```{r}
-library(png)  # needed to work with screenshots
-library(geomorph)
+library(png )  # needed to work with screenshots
+library(geomorph )
 library(dplyr)
-library(stringr)
-library(stringi)
-library(devtools)
-library(dispRity)
-library(landvR)
+library(stringr )
+library(stringi )
+library(devtools )
+library(dispRity )
+library(landvR )
 
-# Load libraries (and install if necessary) for landvR package
-if(!require(devtools)) install.packages("devtools")
-if(!require(dispRity)) install.packages("dispRity")
-if(!require(landvR)) install_github("TGuillerme/landvR")
+# Load libraries (and install if necessary) for landvR package (the github command is part of the remotes:: package)
+
+if(!require(dispRity)) install.packages("dispRity",lib= "C:/Program Files/R/R-4.0.2/library")
+if(!require(landvR)) remotes::install_github("TGuillerme/landvR",lib= "C:/Program Files/R/R-4.0.2/library")
 ```
 
 ## Prepare shape data for analyses in _geomorph_
@@ -138,11 +138,12 @@ class(gpagen.shape) <- "gpagen"
 PC1.var <- variation.range(gpagen.shape, return.ID = FALSE, axis = 1, ordination = ordination, type = "spherical")
 
 # Wrap specimens on the tangent space
-wrap.PCA <- plotTangentSpace(Y$coords, verbose = FALSE)
+wrap.PCA <- gm.prcomp(Y$coords)
 
 # Select extreme specimens (the ones that make the warp-meshes)
-hypothetical.1 <- wrap.PCA$pc.shapes[[1]]
-hypothetical.2 <- wrap.PCA$pc.shapes[[2]]
+#VW: THIS is for Pc1 (hypothetical.1) and PC2 (note in previous geomorph eachwould have been min or max of just one PC)
+hypothetical.1 <- wrap.PCA$shapes[[1]]
+hypothetical.2 <- wrap.PCA$shapes[[2]]
 ```
 
 ### Plot the range of variation along PC1 using a heat color scheme
@@ -150,11 +151,12 @@ hypothetical.2 <- wrap.PCA$pc.shapes[[2]]
 ```{r}
 # PC1 Heatmap
 open3d(windowRect = c(0, 0, 600, 600))
-PC1.var.plot <- procrustes.var.plot(hypothetical.1, hypothetical.2, col = heat.colors, col.val = PC1.var[, "radius"], labels = F)
+PC1.var.plot <- procrustes.var.plot(hypothetical.1$min, hypothetical.1$max, col = heat.colors, col.val = PC1.var[, "radius"], labels = F)
 view3d(phi = 0)
 ```
 
 ### Plot the range of variation along PC2 using a heat color scheme
+#VW: THIS HASN'T BEEN FIXED YET
 ```{r}
 # Measure extremes of variation from mean on PC2
 PC2.var <- variation.range(gpagen.shape, return.ID = FALSE, axis = 2, ordination = ordination, type = "spherical")
