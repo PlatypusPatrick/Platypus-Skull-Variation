@@ -19,6 +19,7 @@ library(stringr)
 library(stringi)
 library(data.table)
 library(geomorph)
+library(Morpho)
 ```
 
 ## Prepare shape data for analyses in _geomorph_
@@ -322,24 +323,86 @@ summary(LM_POP3)
 
 ### Allometry analyses (Does shape change with size?)
 ```{r}
-#Does shape change with size?
+#Does shape change with size? Note size is NOT logged here
+
 Allom_Simple <-procD.lm(shape~size, iter = 499, data = AllometryGDF)
 summary(Allom_Simple) #Yes- nearly 19% of shape variation due to size
 
 #Plot
 plot(Allom_Simple, type = "regression", reg.type = "RegScore", predictor = AllometryGDF$size, pch = 19, col=as.factor(metadata_MF$Sex))
-```
 
+#Turn into an object for later warping
+AllomPlot <- plot(Allom_Simple, type = "regression", reg.type = "RegScore", predictor = AllometryGDF$size)
+
+
+```
+#Find mean specimen, warp to mean shape
 
 ```{r, cache=FALSE}
 
-meanspec <- findMeanSpec(AllometryGDF$shape)
+spec_closest_to_mean <- A[,,findMeanSpec(AllometryGDF$shape)]
 
-Mean_spec <- read.ply("../1_Data (original data)/1_Raw/O_ana_QVM_M1986x1x47.ply")
-Mean_spec$material$color <- Mean_spec$it
-Mean_spec$material$color <- "purple"
+mshape_coords <- mshape(biY$symm.shape)
 
-shade3d(Mean_spec)
+
+Mean_spec_mesh <- read.ply("../1_Data (original data)/1_Raw/O_ana_QVM_M1986x1x47.ply")
+Mean_spec_mesh$material$color <- Mean_spec$it
+Mean_spec_mesh$material$color <- "hotpink"
+
+#Make sure specimen 3d and landmarks work together
+shade3d(Mean_spec_mesh)
+spheres3d(spec_closest_to_mean, col="hotpink")
+
+#Mean shape 
+Refmesh <- warpRefMesh(Mean_spec_mesh, spec_closest_to_mean, mshape_coords, color = "steelblue2", centered = FALSE)
+
+open3d()
+shade3d(Refmesh)
+
+writeply ( "../Data/Processed/Mean_shape.ply",withColors=T, format = "ascii")
+
+```
+
+#Warp mean shape to min and max Regscore to show predicted shape of min and max sized specimen
+
+```{r}
+
+preds <- shape.predictor(Allom_Simple$GM$fitted, x= AllomPlot$RegScore,
+                         predmin =  min (AllomPlot$RegScore),
+                         predmax= max (AllomPlot$RegScore) 
+                         )       
+
+#Largest shape
+
+Largest_warp <- plotRefToTarget(mshape_coords, preds$predmax, method = "surface", mesh = Refmesh)
+Smallest_warp <- plotRefToTarget(mshape_coords, preds$predmin, method = "surface", mesh = Refmesh)
+
+shade3d(Largest_warp)
+writePLY("../Figures/Meshes/Max_Allometry.ply",withColors=T, format = "ascii")
+
+shade3d(Smallest_warp)
+writePLY("../Figures/Meshes/Min_Allometry.ply",withColors=T, format = "ascii")
+
+#or just read in after the above was run: 
+
+Largest_warp <- read.ply ("../Figures/3Dmeshes/Max_Allometry.ply")
+Largest_warp$material$color <- Largest_warp$it
+Largest_warp$material$color <- "steelblue2"
+
+Smallest_warp <- read.ply ("../Figures/3Dmeshes/Min_Allometry.ply")
+Smallest_warp$material$color <- Smallest_warp$it
+Smallest_warp$material$color <- "steelblue2"
+
+```
+
+#Make warpmovie; name it according to how you position the 3d file. Make sure the screen is maximised
+````{r}
+
+
+warpmovie3d(Largest_warp, Smallest_warp, n=20, palindrome = TRUE,
+            folder = "../Figures/Allometry_dorsal", movie = "warpmovie_O_anat_dorsal", col = "steelblue2", add = FALSE, close = TRUE,countbegin = 0, ask = TRUE)
+
+
 
 ```
 
@@ -396,29 +459,30 @@ summary(pairwise(ProcLm_pop, groups=GDF_PopSex$pop))
 ### PCA plotting investigating sex
 ```{r}
 #Make a colour key for sex
-colour_pca_sex <- c("Black", "Red", "Blue")
+colour_pca_sex <- c( "Red", "Blue","Black")
 grp <- as.factor(meta.info$Sex)
 names(colour_pca_sex) <- sort(unique(grp))
 grp_col_pca_sex <- colour_pca_sex[match(grp, names(colour_pca_sex))]
 
 # Plot 3D shape into a PCA plot
-pca_general <- plotTangentSpace(bY.shape)
+pca_general <- gm.prcomp(bY.shape)
 
 #Summary of PCA
-pca_general$pc.summary
+pca_summary <- summary(pca_general)
 
 #Look at difference
 plotRefToTarget(pca_general$pc.shapes$PC1min,pca_general$pc.shapes$PC1max, method="vector",pt.bg="pink")
 
 #Plot PCA of Sex
-plot(x = pca_general$pc.scores[, 1],
-                         y = pca_general_MF$pc.scores[, 2], 
-                         xlab = "PC1", 
-                         ylab = "PC2",
+plot(x = pca_general$x[, 1],
+                         y = pca_general$x[, 2], 
+                         xlab = paste( "PC1", round((pca_summary$PC.summary[2,1]*100),2), "%", sep=" "),
+                         ylab = paste( "PC2", round((pca_summary$PC.summary[2,2]*100),2), "%", sep=" "),
                          asp = TRUE,
                          col = grp_col_pca_sex, 
                          pch = 16 )
-legend("topleft", levels(meta.info$Sex), col=colour_pca_sex, pch = 19)
+
+legend("topleft", levels(as.factor(meta.info$Sex)), col=colour_pca_sex, pch = 19)
 
 #scree plot
 screeplot(pca_general_MF)
